@@ -1,0 +1,32 @@
+{
+  "nativescript": {
+    "id": "ch.epfl.dedis.xps",
+    "tns-ios": {
+      "version": "4.2.0"
+    },
+    "tns-android": {
+      "version": "4.2.0"
+    }
+  },
+  "description": "NativeScript Application",
+  "license": "SEE LICENSE IN <your-license-filename>",
+  "repository": "<fill-your-repository-here>",
+  "scripts": {
+    "lint": "eslint \"app/**/*.js\""
+  },
+  "dependencies": {
+    "nativescript-barcodescanner": "^2.7.8",
+    "nativescript-floatingactionbutton": "^4.1.4",
+    "nativescript-theme-core": "~1.0.4",
+    "nativescript-ui-listview": "^3.7.0",
+    "nativescript-ui-sidedrawer": "~4.2.0",
+    "rxjs": "~6.2.0",
+    "tns-core-modules": "~4.2.0"
+  },
+  "devDependencies": {
+    "eslint": "~4.19.0",
+    "nativescript-dev-sass": "~1.6.0",
+    "nativescript-dev-webpack": "~0.16.0"
+  },
+  "readme": "NativeScript Application"
+}
