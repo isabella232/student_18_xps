@@ -1,6 +1,17 @@
 const app = require("application");
-const ScanToReturn = require("../shared/lib/scan-to-return");
+
+const lib = require("../shared/lib");
+const dedjs = lib.dedjs;
+const Wallet = dedjs.object.pop.Wallet;
+const User = dedjs.object.user.get;
+const Log = dedjs.Log;
+const Convert = dedjs.Convert;
+const Helper = dedjs.Helper;
+const ObjectType = dedjs.ObjectType;
+const ScanToReturn = lib.scan_to_return;
+
 const HomeViewModel = require("./home-view-model");
+
 
 function onNavigatingTo(args) {
     const page = args.object;
