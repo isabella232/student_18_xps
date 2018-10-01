@@ -1,9 +1,9 @@
 <Page
-    class="page"
-    navigatingTo="onNavigatingTo"
-    xmlns:nsFloatingButton="nativescript-floatingactionbutton"
-    xmlns:nsListView="nativescript-ui-listview"
-    xmlns="http://schemas.nativescript.org/tns.xsd">
+        class="page"
+        navigatingTo="onNavigatingTo"
+        xmlns:nsFloatingButton="nativescript-floatingactionbutton"
+        xmlns:nsListView="nativescript-ui-listview"
+        xmlns="http://schemas.nativescript.org/tns.xsd">
 
     <ActionBar class="action-bar">
         <!--
@@ -17,22 +17,39 @@
         because its function is to always navigate back in the application.
         -->
         <ActionItem icon="res://navigation/menu"
-            android:visibility="collapsed"
-            tap="onDrawerButtonTap"
-            ios.position="left">
+                    android:visibility="collapsed"
+                    tap="onDrawerButtonTap"
+                    ios.position="left">
         </ActionItem>
         <Label class="action-bar-title" text="Home"></Label>
     </ActionBar>
 
-    <GridLayout class="page-content"  rows="auto, *">
-        <Label id="conodeLabel" text="You don't have any conode. Feel free to add one!"
+    <GridLayout class="page-content" rows="auto, *">
+        <Label id="emptyServerLabel"
+               text="You don't have any conode. Feel free to add one!"
                textWrap="true"
-               visibility="visible"
-                alignSelf="center"/>
-        <nsFloatingButton:fab tap="scanQRCode"
-                              row="2"
-                              icon="res://ic_add_white_48dp"
-                              rippleColor="#f1f1f1"
-                              class="fab-button"/>
+               visibility="{{ isServerEmpty ?  'visible' : 'collapsed'}}"
+               alignSelf="center"/>
+        <Label id="conodeLabel"
+               text="<server info>"
+               textWrap="true"
+               visibility="{{ isServerEmpty ? 'collapsed' : 'visible'}}"
+               alignSelf="center"/>
+        <nsFloatingButton:fab
+                id="addButton"
+                visibility="{{ isServerEmpty ?  'visible' : 'collapsed'}}"
+                tap="scanQRCode"
+                row="2"
+                icon="res://ic_add_white_48dp"
+                rippleColor="#f1f1f1"
+                class="fab-button"/>
+        <nsFloatingButton:fab
+                id="deleteServer"
+                visibility="{{ isServerEmpty ? 'collapsed' : 'visible'}}"
+                tap="deleteServer"
+                row="2"
+                icon="res://ic_delete_white_48dp"
+                rippleColor="#f1f1f1"
+                class="fab-button"/>
     </GridLayout>
 </Page>

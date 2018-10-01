@@ -4,9 +4,9 @@ const SelectedPageService = require("../shared/selected-page-service");
 
 function HomeViewModel() {
     SelectedPageService.getInstance().updateSelectedPage("Home");
-    let server;
     const viewModel = Observable.fromObjectRecursive({
-        server: server
+        isServerEmpty: true,
+        server: undefined
     });
 
     return viewModel;
