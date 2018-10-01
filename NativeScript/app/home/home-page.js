@@ -7,6 +7,7 @@ const lib = require("../shared/lib");
 const dedjs = lib.dedjs;
 const Convert = dedjs.Convert;
 const ScanToReturn = lib.scan_to_return;
+const User = require("../shared/lib/dedjs/object/user/User").get;
 
 const HomeViewModel = require("./home-view-model");
 
@@ -31,8 +32,9 @@ function onNavigatingTo(args) {
                 page.bindingContext.isServerEmpty = args.value === null || args.value === undefined || args.value === "";
                 if (!page.bindingContext.isServerEmpty) {
                     // set the server info and store the server
-                    page.getViewById("conodeLabel").text = args.value.toString();
                     applicationSettings.setString("server", Convert.serverIdentityToJson(args.value));
+                    User.addServer(args.value);
+                    loadServerStats(args.value, page.bindingContext);
                 }
                 else {
                     applicationSettings.setString("server", "");
@@ -48,6 +50,8 @@ function onNavigatingTo(args) {
     console.log("storedServer is ", storedServer);
     if (storedServer !== undefined && storedServer !== null && storedServer !== "") {
         page.bindingContext.server = Convert.parseJsonServerIdentity(storedServer);
+        User.addServer(page.bindingContext.server);
+        loadServerStats(page.bindingContext.server, page.bindingContext);
     }
 }
 
@@ -97,6 +101,21 @@ function deleteServer(args) {
     console.log("Deleting server...");
     const page = args.object;
     page.bindingContext.set("server", undefined);
+}
+
+/**
+ * Triggers the loading of server stats to be displayed
+ * @param server
+ * @param context
+ */
+function loadServerStats(server, context) {
+    User.getRosterStatus().then((value) => {
+        const conodeAndStatusPair = User._statusList[0];
+        if (conodeAndStatusPair !== undefined) {
+            context.statsList.empty();
+            context.statsList.load(conodeAndStatusPair);
+        }
+    });
 }
 
 exports.onNavigatingTo = onNavigatingTo;

@@ -30,11 +30,16 @@
                textWrap="true"
                visibility="{{ isServerEmpty ?  'visible' : 'collapsed'}}"
                alignSelf="center"/>
-        <Label id="conodeLabel"
-               text="<server info>"
-               textWrap="true"
-               visibility="{{ isServerEmpty ? 'collapsed' : 'visible'}}"
-               alignSelf="center"/>
+        <ListView items="{{ statsList, statsList }}"
+                  row="1"
+                  visibility="{{ isServerEmpty ? 'collapsed' : 'visible'}}">
+            <ListView.itemTemplate>
+                <GridLayout class="basic-list" rows="auto,auto" columns="*">
+                    <Label class="list-title" text="{{ info.title }}" textAlignment="left" textWrap="true" row="0"/>
+                    <Label text="{{ info.info }}" textAlignment="left" textWrap="true" row="1"/>
+                </GridLayout>
+            </ListView.itemTemplate>
+        </ListView>
         <nsFloatingButton:fab
                 id="addButton"
                 visibility="{{ isServerEmpty ?  'visible' : 'collapsed'}}"
