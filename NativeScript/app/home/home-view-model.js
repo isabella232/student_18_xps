@@ -1,18 +1,12 @@
-const observableModule = require("data/observable");
-const ObservableArrayModule = require("data/observable-array");
+const Observable = require("data/observable");
 
 const SelectedPageService = require("../shared/selected-page-service");
 
 function HomeViewModel() {
     SelectedPageService.getInstance().updateSelectedPage("Home");
-    // Some examples conodes to display
-    const conodes = [
-        { name: "Conode 1" },
-        { name: "Conode 2" },
-        { name: "Conode 3" }
-    ];
-    const viewModel = observableModule.fromObject({
-        conodes: new ObservableArrayModule.ObservableArray(conodes)
+    let server;
+    const viewModel = Observable.fromObjectRecursive({
+        server: server
     });
 
     return viewModel;

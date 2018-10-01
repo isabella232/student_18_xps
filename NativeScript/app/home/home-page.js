@@ -1,14 +1,12 @@
 const app = require("application");
 
+const Observable = require("tns-core-modules/data/observable").Observable;
+
 const lib = require("../shared/lib");
 const dedjs = lib.dedjs;
-const Wallet = dedjs.object.pop.Wallet;
-const User = dedjs.object.user.get;
-const Log = dedjs.Log;
 const Convert = dedjs.Convert;
-const Helper = dedjs.Helper;
-const ObjectType = dedjs.ObjectType;
 const ScanToReturn = lib.scan_to_return;
+const ServerIdentity = require("../shared/cothority/lib/identity");
 
 const HomeViewModel = require("./home-view-model");
 
@@ -16,6 +14,15 @@ const HomeViewModel = require("./home-view-model");
 function onNavigatingTo(args) {
     const page = args.object;
     page.bindingContext = new HomeViewModel();
+
+    page.bindingContext.addEventListener(Observable.propertyChangeEvent, (args) => {
+        // args is of type PropertyChangeData
+        console.log("propertyChangeEvent [eventName]: ", args.eventName);
+        console.log("propertyChangeEvent [propertyName]: ", args.propertyName);
+        console.log("propertyChangeEvent [value]: ", args.value);
+        console.log("propertyChangeEvent [oldValue]: ", args.oldValue);
+        page.getViewById("conodeLabel").text = args.value.toString();
+    });
 }
 
 function onDrawerButtonTap(args) {
@@ -30,9 +37,30 @@ function onDrawerButtonTap(args) {
 function scanQRCode(args) {
     const page = args.object;
     ScanToReturn.scan().then((string) => {
-        page.bindingContext.conodes.push({
-            name: string
-        });
+        let conode;
+
+        try {
+            conode = Convert.parseJsonServerIdentity(string);
+        }
+        catch (error) {
+            console.log(`Error parsing JSON : ${string} (${error})`);
+        }
+
+        if (conode === undefined) {
+            console.log(`Attempting TOML parsing... : ${string}`);
+            try {
+                conode = Convert.parseTomlRoster(string).list[0];
+            }
+            catch (error) {
+                console.log(`Error parsing TOML : ${string} (${error})`);
+            }
+        }
+
+        if (conode === undefined) {
+            return Promise.reject("parsing error");
+        }
+
+        page.bindingContext.server = conode;
     });
 }
 
