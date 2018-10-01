@@ -23,32 +23,7 @@ http://docs.telerik.com/devtools/nativescript-ui/Controls/NativeScript/SideDrawe
                         <Label row="0" col="0" text="&#xf015;" class="fa" />
                         <Label row="0" col="1" text="Home" class="p-r-10" />
                     </GridLayout>
-
-                    <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'Browse' ? ' selected': '') }}"
-                        route="browse/browse-page" title="Browse" tap="onNavigationItemTap">
-                        <Label row="0" col="0" text="&#xf1ea;" class="fa" />
-                        <Label row="0" col="1" text="Browse" class="p-r-10" />
-                    </GridLayout>
-
-                    <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'Search' ? ' selected': '') }}"
-                        route="search/search-page" title="Search" tap="onNavigationItemTap">
-                        <Label row="0" col="0" text="&#xf002;" class="fa" />
-                        <Label row="0" col="1" text="Search" class="p-r-10" />
-                    </GridLayout>
-
-                    <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'Featured' ? ' selected': '') }}"
-                        route="featured/featured-page" title="Featured" tap="onNavigationItemTap">
-                        <Label row="0" col="0" text="&#xf005;" class="fa" />
-                        <Label row="0" col="1" text="Featured" class="p-r-10" />
-                    </GridLayout>
-
                     <StackLayout class="hr-light"></StackLayout>
-
-                    <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'Settings' ? ' selected': '') }}"
-                        route="settings/settings-page" title="Settings" tap="onNavigationItemTap">
-                        <Label row="0" col="0" text="&#xf013;" class="fa" />
-                        <Label row="0" col="1" text="Settings" class="p-r-10" />
-                    </GridLayout>
                 </StackLayout>
             </ScrollView>
         </GridLayout>
