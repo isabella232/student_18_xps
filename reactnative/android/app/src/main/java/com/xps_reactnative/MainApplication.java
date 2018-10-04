@@ -1,4 +1,4 @@
-package com.reactnative;
+package com.xps_reactnative;
 
 import android.app.Application;
 
