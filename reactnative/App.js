@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, ToolbarAndroid} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -22,15 +22,17 @@ type Props = {};
 export default class App extends Component<Props> {
     render() {
         return (
-            <View style={{flex: 1, backgroundColor: '#f3f3f3'}}>
-                <Text style={styles.welcome}>Welcome to React Native!</Text>
-                <Text style={styles.instructions}>To get started, edit App.js</Text>
-                <Text style={styles.instructions}>{instructions}</Text>
-                <ActionButton buttonColor="rgba(231,76,60,1)">
-                    <ActionButton.Item buttonColor='#9b59b6' title="Add Server"
-                                       onPress={() => console.log("addButton tapped!")}>
-                        <Icon name="md-add" style={styles.actionButtonIcon}/>
-                    </ActionButton.Item>
+            <View style={styles.container}>
+                <ToolbarAndroid
+                    style={styles.toolbar}
+                    title="XPS React Native"
+                    titleColor={'#FFFFFF'}/>
+                <Text style={styles.welcome}>You have no conode stored. Feel free to add one!</Text>
+                <ActionButton
+                              buttonColor='#9b59b6'
+                              onPress={() => console.log("addButton tapped!")}
+                              icon={<Icon name="md-add" style={styles.actionButtonIcon}/>}
+                              fixNativeFeedbackRadius={true}> /* fixes feedback animation being square */
                 </ActionButton>
             </View>
         );
@@ -40,8 +42,6 @@ export default class App extends Component<Props> {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: '#F5FCFF',
     },
     welcome: {
@@ -58,5 +58,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         height: 22,
         color: 'white',
+    },
+    toolbar: {
+        backgroundColor: '#2196F3',
+        height: 56, //must set a height, see https://github.com/facebook/react-native/issues/5293
+        alignSelf: 'stretch',
     },
 });
