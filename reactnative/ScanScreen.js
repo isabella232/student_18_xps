@@ -1,22 +1,26 @@
 import React, {Component} from 'react';
 
 import {
-    AppRegistry,
     StyleSheet,
     Text,
-    TouchableOpacity,
-    Linking,
 } from 'react-native';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {Actions} from "react-native-router-flux";
+import "./HomePage"
+import {saveConodeJSON} from "./HomePage";
 
 class ScanScreen extends Component {
+
+    /**
+     * Triggered when the QR Code scanner reads a code successfully. It saves the JSON info into memory and goes back
+     * to home page
+     * @param e read data from QR Code
+     */
     onSuccess(e) {
-        Actions.homePage({scanResult : e.data});
-        /*Linking
-            .openURL(e.data)
-            .catch(err => console.error('An error occured', err));*/
+        console.debug("Scanned: " + e.data);
+        saveConodeJSON(e.data);
+        Actions.homePage();
     }
 
     render() {
@@ -33,7 +37,6 @@ class ScanScreen extends Component {
     }
 }
 
-const styles = StyleSheet.create({
-});
+const styles = StyleSheet.create({});
 
 export default ScanScreen;
