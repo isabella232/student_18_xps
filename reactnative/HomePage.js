@@ -14,6 +14,11 @@ import {Actions, Router, Scene} from "react-native-router-flux";
 import Storage from 'react-native-storage';
 import {AsyncStorage} from 'react-native';
 
+const lib = require("./shared/lib");
+const dedjs = lib.dedjs;
+const Convert = dedjs.Convert;
+const User = dedjs.object.user.get;
+
 const storage = new Storage({
     // maximum capacity, default 1000
     size: 1000,
@@ -49,6 +54,21 @@ function saveConodeJSON(conodeJSON) {
     });
 }
 
+/**
+ * Triggers the loading of server stats to be displayed
+ * @param server
+ * @param context
+ */
+function loadServerStats(server, context) {
+    User.getRosterStatus().then((value) => {
+        const conodeAndStatusPair = User._statusList[0];
+        if (conodeAndStatusPair !== undefined) {
+            context.statsList.empty();
+            context.statsList.load(conodeAndStatusPair);
+        }
+    });
+}
+
 
 class HomePage extends Component {
 
@@ -56,7 +76,8 @@ class HomePage extends Component {
     constructor() {
         super();
         this.state = {
-            conodeJSON: null
+            conodeJSON: null,
+            conode: null
         };
         // here we check the memory and load the stored conode if any.
         storage.load({
@@ -64,6 +85,9 @@ class HomePage extends Component {
         }).then(ret => {
             // found data go to then()
             this.setState({conodeJSON: ret});
+            this.setState({conode: Convert.parseJsonServerIdentity(ret)});
+            User.addServer(this.state.conode);
+
             console.debug("Saved conode loaded: " + ret);
         }).catch(err => {
             // any exception including data not found
@@ -113,8 +137,10 @@ class HomePage extends Component {
                         onPress={() => this.deleteConode()}>
                     </ActionButton>
                 }
-
-
+                <FlatList
+                    data={[{key: 'a'}, {key: 'b'}]}
+                    renderItem={({item}) => <Text>{item.key}</Text>}
+                />
             </View>
         );
     }
