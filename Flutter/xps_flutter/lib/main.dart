@@ -163,11 +163,18 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
+      floatingActionButton:
+      _conodeJSON == "" || errorScanning ?
+      new FloatingActionButton(
         onPressed: scan,
-        tooltip: 'Increment',
+        tooltip: 'Add',
         child: new Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ) :
+      new FloatingActionButton(
+        onPressed: _deleteJSON,
+        tooltip: 'Delete',
+        child: new Icon(Icons.delete),
+      ) , // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
