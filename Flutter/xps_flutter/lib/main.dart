@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(new MyApp());
 
@@ -50,30 +50,64 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String barcode = "";
+  String _conodeJSON = "";
   String conodeText = DEFAULT_CONODE_TEXT;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadJSON();
+  }
+
+  //Loads the conode JSON info saved in memory
+  _loadJSON() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _conodeJSON = (prefs.getString('conodeJSON') ?? "");
+      if(_conodeJSON != ""){
+        this.conodeText = "";
+      }
+    });
+  }
+
+  //Saves the conode JSON to memory
+  _saveJSON() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setString('conodeJSON', _conodeJSON);
+    });
+  }
 
   Future scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
-      setState(() => this.barcode = barcode);
-      setState(() => this.conodeText = "");
+      setState(() {
+        this._conodeJSON = barcode;
+        this.conodeText = "";
+      });
+      _saveJSON();
 
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          this.barcode = 'The user did not grant the camera permission!';
+          this._conodeJSON = 'The user did not grant the camera permission!';
         });
       } else {
-        setState(() => this.barcode = 'Unknown error: $e');
+        setState(() {
+          this._conodeJSON = 'Unknown error: $e';
+        });
       }
       setState(() => this.conodeText = DEFAULT_CONODE_TEXT);
     } on FormatException{
-      setState(() => this.barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
-      setState(() => this.conodeText = DEFAULT_CONODE_TEXT);
+      setState(() {
+        this._conodeJSON = 'null (User returned using the "back"-button before scanning anything. Result)';
+        this.conodeText = DEFAULT_CONODE_TEXT;
+      });
     } catch (e) {
-      setState(() => this.barcode = 'Unknown error: $e');
-      setState(() => this.conodeText = DEFAULT_CONODE_TEXT);
+      setState(() {
+        this._conodeJSON = 'Unknown error: $e';
+        this.conodeText = DEFAULT_CONODE_TEXT;
+      });
     }
   }
 
@@ -85,6 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
     return new Scaffold(
       appBar: new AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -114,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
               conodeText,
             ),
             new Text(
-              barcode,
+              _conodeJSON,
             ),
           ],
         ),
