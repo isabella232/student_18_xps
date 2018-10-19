@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:xps_flutter/scan_screen.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 
 
 void main() => runApp(new MyApp());
+
+const String DEFAULT_CONODE_TEXT = 'You have no conode stored. Feel free to add one!';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -49,13 +50,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   String barcode = "";
+  String conodeText = DEFAULT_CONODE_TEXT;
 
   Future scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
       setState(() => this.barcode = barcode);
+      setState(() => this.conodeText = "");
+
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
@@ -64,10 +67,13 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         setState(() => this.barcode = 'Unknown error: $e');
       }
+      setState(() => this.conodeText = DEFAULT_CONODE_TEXT);
     } on FormatException{
       setState(() => this.barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
+      setState(() => this.conodeText = DEFAULT_CONODE_TEXT);
     } catch (e) {
       setState(() => this.barcode = 'Unknown error: $e');
+      setState(() => this.conodeText = DEFAULT_CONODE_TEXT);
     }
   }
 
@@ -105,11 +111,10 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Text(
-              'You have no conode stored. Feel free to add one!',
+              conodeText,
             ),
             new Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+              barcode,
             ),
           ],
         ),
