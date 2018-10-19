@@ -51,7 +51,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String _conodeJSON = "";
-  String conodeText = DEFAULT_CONODE_TEXT;
+  bool errorScanning = false;
+
 
   @override
   void initState() {
@@ -64,9 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _conodeJSON = (prefs.getString('conodeJSON') ?? "");
-      if(_conodeJSON != ""){
-        this.conodeText = "";
-      }
+      this.errorScanning = false;
     });
   }
 
@@ -78,12 +77,21 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  //Delete the conode JSON stored in memory
+  _deleteJSON() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.remove('conodeJSON');
+      this._conodeJSON = "";
+      this.errorScanning = false;
+    });
+  }
   Future scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
       setState(() {
         this._conodeJSON = barcode;
-        this.conodeText = "";
+        this.errorScanning = false;
       });
       _saveJSON();
 
@@ -97,16 +105,16 @@ class _MyHomePageState extends State<MyHomePage> {
           this._conodeJSON = 'Unknown error: $e';
         });
       }
-      setState(() => this.conodeText = DEFAULT_CONODE_TEXT);
+      setState(() => this.errorScanning = true);
     } on FormatException{
       setState(() {
         this._conodeJSON = 'null (User returned using the "back"-button before scanning anything. Result)';
-        this.conodeText = DEFAULT_CONODE_TEXT;
+        this.errorScanning = true;
       });
     } catch (e) {
       setState(() {
         this._conodeJSON = 'Unknown error: $e';
-        this.conodeText = DEFAULT_CONODE_TEXT;
+        this.errorScanning = true;
       });
     }
   }
@@ -145,9 +153,10 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            _conodeJSON == "" || errorScanning ?
             new Text(
-              conodeText,
-            ),
+              DEFAULT_CONODE_TEXT
+            ) :
             new Text(
               _conodeJSON,
             ),
