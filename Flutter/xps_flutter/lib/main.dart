@@ -171,6 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: new Icon(Icons.add),
       ) :
       new FloatingActionButton(
+        backgroundColor: Color.fromARGB(255, 255, 0, 0),
         onPressed: _deleteJSON,
         tooltip: 'Delete',
         child: new Icon(Icons.delete),
