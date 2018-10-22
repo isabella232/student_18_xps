@@ -1,5 +1,5 @@
 const util = require('util');
-const application = require("application");
+import { Platform } from "react-native";
 
 let defaultLvl = 2;
 
@@ -44,7 +44,8 @@ class LogC {
         try {
             let stack = err.stack.split('\n')
             let method = "";
-            if (application.android) {
+
+            if (Platform.OS === "android") {
                 method = stack[i].trim().replace(/^at */, '').split("(");
             } else {
                 method = stack[i - 1].trim().split("@");

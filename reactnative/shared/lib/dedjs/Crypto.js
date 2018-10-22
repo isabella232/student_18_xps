@@ -1,6 +1,5 @@
 const Convert = require("./Convert");
 const Kyber = require("@dedis/kyber-js");
-const ObservableModule = require("data/observable");
 const FileIO = require("../file-io/file-io");
 const FilesPath = require("../file-io/files-path");
 
@@ -46,11 +45,11 @@ class KeyPair {
             throw new Error("dirname should be of type string or undefined");
         }
         this._dirname = dirname;
-        this._keyPair = ObservableModule.fromObject({
+        this._keyPair = {
             public: new Uint8Array(),
             private: new Uint8Array(),
             toHex: Convert.byteArrayToHex
-        });
+        }
 
         return this.load()
             .then(() => {

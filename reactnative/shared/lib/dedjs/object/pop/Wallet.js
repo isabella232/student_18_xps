@@ -1,5 +1,6 @@
-const FileSystem = require("tns-core-modules/file-system");
-const Documents = FileSystem.knownFolders.documents();
+const FileSystem = require("react-native-filesystem");
+//TODO BROKEN - port from NativeScript not functional
+//const Documents = FileSystem.knownFolders.documents();
 const Kyber = require("@dedis/kyber-js");
 const CurveEd25519 = new Kyber.curve.edwards25519.Curve;
 const Schnorr = Kyber.sign.schnorr;
@@ -743,13 +744,15 @@ class MigrateFrom {
             FileIO.forEachFolderElement(FilePaths.POP_ATT_PATH, function (partyFolder) {
                 fileNames.push(FileIO.join(FilePaths.POP_ATT_PATH, partyFolder.name, FilePaths.POP_ATT_INFOS))
             });
-            return Promise.all(
+            // TODO BROKEN - port from NativeScript not functional
+            /*return Promise.all(
                 fileNames.map(fileName => {
                     return Documents.getFile(fileName).remove();
                 })
             ).then(() => {
                 return wallets;
-            })
+            })*/
+            throw {name : "NotImplementedError", message : "Port from NativeScript not functional for this function."};
         }).catch(err => {
             Log.error("couldn't read files: " + err);
             return [];

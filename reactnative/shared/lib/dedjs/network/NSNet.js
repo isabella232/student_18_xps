@@ -1,8 +1,8 @@
-const Timer = require("tns-core-modules/timer");
+const Timer = require("react-native-timer");
 const protobuf = require("protobufjs");
 const co = require("co");
 const shuffle = require("shuffle-array");
-const WS = require("nativescript-websockets");
+const WS = require("react-native-websocket");
 const Buffer = require("buffer/").Buffer;
 
 const Convert = require("../../../lib/dedjs/Convert");

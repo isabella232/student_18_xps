@@ -1,4 +1,3 @@
-require("nativescript-nodeify");
 const Proof = require("./Proof");
 const Config = require("./Config");
 const Darc = require("./darc/Darc");

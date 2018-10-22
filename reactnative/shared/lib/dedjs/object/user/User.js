@@ -1,4 +1,3 @@
-const ObservableModule = require("data/observable");
 const Kyber = require("@dedis/kyber-js");
 const CurveEd25519 = new Kyber.curve.edwards25519.Curve;
 

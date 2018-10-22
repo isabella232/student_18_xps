@@ -4,8 +4,6 @@ const ObjectType = require("../../ObjectType");
 const FileIO = require("../../../file-io/file-io");
 const FilesPath = require("../../../file-io/files-path");
 const Convert = require("../../Convert");
-const ObservableArray = require("data/observable-array").ObservableArray;
-const Observable = require("data/observable");
 const RingSig = require("../../RingSig");
 const Kyber = require("@dedis/kyber-js");
 const Suite = new Kyber.curve.edwards25519.Curve;
@@ -22,15 +20,15 @@ class Bar {
       throw new Error("dirname should be of type string or undefined");
     }
     this._dirname = dirname;
-    this._config = Observable.fromObject({
+    this._config = {
       name: "",
       frequency: "",
       date: new Date(Date.now())
-    });
+    }
     this._checkedClients = [];
     this._finalStatement = undefined;
     this._anonymitySet = new Set();
-    this._orderHistory = new ObservableArray();
+    this._orderHistory = [];
 
     this.load()
   }

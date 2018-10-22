@@ -2,8 +2,8 @@
  * @file Library to ease file I/O using promises.
  */
 
-const FileSystem = require("tns-core-modules/file-system");
-const Documents = FileSystem.knownFolders.documents();
+import FileSystem from 'react-native-filesystem';
+const DocumentsPath = "Documents/";
 const Log = require("../dedjs/Log");
 
 /**
@@ -15,17 +15,7 @@ function getStringOf(filePath) {
     if (typeof filePath !== "string") {
         throw new Error("filePath must be of type string");
     }
-
-    return Documents.getFile(filePath)
-        .readText()
-        .then(string => {
-            // console.log("read from " + filePath + ":" + string);
-            return Promise.resolve(string);
-        })
-        .catch((error) => {
-            console.log("READING ERROR:", error);
-            lslr("shared/res/files");
-        });
+    return FileSystem.readFile(DocumentsPath + filePath);
 }
 
 /**
@@ -41,14 +31,8 @@ function writeStringTo(filePath, string) {
     if (typeof string !== "string") {
         throw new Error("string must be of type string");
     }
-
     console.log("writing to: " + filePath);
-    return Documents.getFile(filePath)
-        .writeText(string)
-        .catch((error) => {
-            console.log("WRITING ERROR:", error);
-            lslr(filePath);
-        });
+    return FileSystem.writeToFile(DocumentsPath+filePath,string);
 }
 
 /**
@@ -66,11 +50,13 @@ function forEachFolderElement(folder, closure) {
         throw new Error("closure must be of type function");
     }
 
-    Documents.getFolder(folder).eachEntity(function (entity) {
+    //TODO BROKEN - port from NativeScript not functional
+    /*Documents.getFolder(folder).eachEntity(function (entity) {
         closure(entity);
         // continue until the last file
         return true;
-    })
+    })*/
+    throw {name : "NotImplementedError", message : "Port from NativeScript not functional for this function."};
 }
 
 /**
@@ -83,12 +69,14 @@ function removeFolder(folder) {
         throw new Error("folder must be of type string");
     }
 
-    return Documents.getFolder(folder).remove().catch((error) => {
+    //TODO BROKEN - port from NativeScript not functional
+    /*return Documents.getFolder(folder).remove().catch((error) => {
         console.log("REMOVING ERROR :");
         console.log(error);
         console.dir(error);
         console.trace();
-    });
+    });*/
+    throw {name : "NotImplementedError", message : "Port from NativeScript not functional for this function."};
 }
 
 /**
@@ -98,10 +86,14 @@ function removeFolder(folder) {
  * @returns {Promise<void>}
  */
 function rmrf(dir) {
+    /* TODO BROKEN - port from NativeScript not functional
     return Documents.getFolder(dir).clear();
+    */
+    throw {name : "NotImplementedError", message : "Port from NativeScript not functional for this function."};
 }
 
 function lslr(dir, rec) {
+    /* TODO BROKEN - port from NativeScript not functional
     if (rec === undefined) {
         dir = FileSystem.path.join(Documents.path, dir);
     }
@@ -138,22 +130,27 @@ function lslr(dir, rec) {
         }).catch((err) => {
         // Failed to obtain folder's contents.
         console.log(err.stack);
-    });
+    });*/
+    throw {name : "NotImplementedError", message : "Port from NativeScript not functional for this function."};
 }
 
 function folderExists(path) {
-    return FileSystem.Folder.exists(this.join(Documents.path, path));
+    return FileSystem.directoryExists(DocumentsPath + path);
 }
 
 function fileExists(path) {
-    return FileSystem.Folder.exists(this.join(Documents.path, path));
+    return FileSystem.fileExists(DocumentsPath + path);
+}
+
+function join(path1,path2) {
+    return path1 + '/' + path2;
 }
 
 module.exports.getStringOf = getStringOf;
 module.exports.writeStringTo = writeStringTo;
 module.exports.forEachFolderElement = forEachFolderElement;
 module.exports.removeFolder = removeFolder;
-module.exports.join = FileSystem.path.join;
+module.exports.join = join;
 module.exports.fileExists = fileExists;
 module.exports.folderExists = folderExists;
 module.exports.rmrf = rmrf;
