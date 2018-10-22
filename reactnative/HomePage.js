@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, ToolbarAndroid} from 'react-native';
+import {Platform, StyleSheet, Text, View, FlatList, ToolbarAndroid} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Actions, Router, Scene} from "react-native-router-flux";

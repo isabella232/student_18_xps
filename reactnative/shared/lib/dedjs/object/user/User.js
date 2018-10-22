@@ -16,6 +16,7 @@ const RequestPath = require("../../network/RequestPath");
 const DecodeType = require("../../network/DecodeType");
 const CothorityMessages = require("../../network/cothority-messages");
 const KeyPair = require('../../KeyPair');
+const getOwnPropertySymbols = require('get-own-property-symbols');
 
 /**
  * This singleton is the user of the app. It contains everything needed that is general, app-wide or does not belong to any precise subpart.
@@ -474,15 +475,16 @@ class User {
     }
 }
 
+//TODO BROKEN - port from NativeScript not functional
 /**
  * Now we create a singleton object for the User.
  */
-
+/*
 // The symbol key reference that the singleton will use.
 const USER_PACKAGE_KEY = Symbol.for(Package.USER);
 
 // We create the singleton if it hasn't been instanciated yet.
-const globalSymbols = Object.getOwnPropertySymbols(global);
+const globalSymbols = getOwnPropertySymbols(global);
 const userExists = (globalSymbols.indexOf(USER_PACKAGE_KEY) >= 0);
 
 if (!userExists) {
@@ -511,3 +513,4 @@ Object.freeze(USER);
 
 // We export only the singleton API.
 module.exports = USER;
+*/
