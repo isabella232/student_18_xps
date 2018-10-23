@@ -514,3 +514,10 @@ Object.freeze(USER);
 // We export only the singleton API.
 module.exports = USER;
 */
+function getUser(){
+    const newUser = new User();
+    newUser.load();
+
+    return newUser;
+}
+module.exports = getUser;

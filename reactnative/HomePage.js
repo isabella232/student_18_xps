@@ -17,7 +17,9 @@ import {AsyncStorage} from 'react-native';
 const lib = require("./shared/lib");
 const dedjs = lib.dedjs;
 const Convert = dedjs.Convert;
-const User = dedjs.object.user.get;
+const UserClass = dedjs.object.user;
+const User = new UserClass();
+User.load();
 
 const storage = new Storage({
     // maximum capacity, default 1000
@@ -47,11 +49,11 @@ const storage = new Storage({
  * @param conodeJSON JSON containing information about a conode
  */
 function saveConodeJSON(conodeJSON) {
-    console.debug("Saved conodeJSON!");
     storage.save({
         key: 'conode',   // Note: Do not use underscore("_") in key!
         data: conodeJSON,
     });
+    console.debug("Saved conodeJSON!");
 }
 
 /**
@@ -86,6 +88,8 @@ class HomePage extends Component {
             // found data go to then()
             this.setState({conodeJSON: ret});
             this.setState({conode: Convert.parseJsonServerIdentity(ret)});
+
+            //TODO fix this failing silently
             User.addServer(this.state.conode);
 
             console.debug("Saved conode loaded: " + ret);
@@ -119,6 +123,10 @@ class HomePage extends Component {
                 <Text style={styles.welcome}>
                     {this.state.conodeJSON ? this.state.conodeJSON : "You have no conode stored. Feel free to add one!"}
                 </Text>
+                <FlatList
+                    data={[{key: 'a'}, {key: 'b'}]}
+                    renderItem={({item}) => <Text>{item.key}</Text>}
+                />
                 {this.state.conodeJSON == null ?
                     // The floating action button to ADD a conode server, opens the QR Code scanner
                     <ActionButton
@@ -137,10 +145,6 @@ class HomePage extends Component {
                         onPress={() => this.deleteConode()}>
                     </ActionButton>
                 }
-                <FlatList
-                    data={[{key: 'a'}, {key: 'b'}]}
-                    renderItem={({item}) => <Text>{item.key}</Text>}
-                />
             </View>
         );
     }
