@@ -131,13 +131,14 @@ function startSchnorrBenchmark(args) {
     const group = new nist.Curve(nist.Params.p256);
     const secretKey = group.scalar().pick();
     const publicKey = group.point().mul(secretKey, null);
-    const message = new Uint8Array([1, 2, 3, 4]);
 
     const t0 = new Date().getMilliseconds();
 
     let i;
     let verificationError = false;
     for (i = 0; i < 1000; i++) {
+        const message = new Uint8Array([i, i + 1, i + 2, i + 3]);
+
         const sig = schnorr.sign(group, secretKey, message);
         verificationError = !schnorr.verify(group, publicKey, message, sig);
         if (verificationError) {
