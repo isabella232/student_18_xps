@@ -8,6 +8,11 @@ const dedjs = lib.dedjs;
 const Convert = dedjs.Convert;
 const ScanToReturn = lib.scan_to_return;
 const User = require("../shared/lib/dedjs/object/user/User").get;
+const Kyber = require("@dedis/kyber-js");
+const schnorr = Kyber.sign.schnorr;
+const nist = Kyber.curve.nist;
+const Toast = require("nativescript-toast");
+const Blake = require("@stablelib/blake2xs").BLAKE2Xs;
 
 const HomeViewModel = require("./home-view-model");
 
@@ -118,7 +123,45 @@ function loadServerStats(server, context) {
     });
 }
 
+function startSchnorrBenchmark(args) {
+    console.log("Starting Schnorr benchmark...");
+    const toast = Toast.makeText("Starting Schnorr benchmark...");
+    toast.show();
+
+    const group = new nist.Curve(nist.Params.p256);
+    const secretKey = group.scalar().pick();
+    const publicKey = group.point().mul(secretKey, null);
+    const message = new Uint8Array([1, 2, 3, 4]);
+
+    const t0 = new Date().getMilliseconds();
+
+    let i;
+    let verificationError = false;
+    for (i = 0; i < 1000; i++) {
+        const sig = schnorr.sign(group, secretKey, message);
+        verificationError = !schnorr.verify(group, publicKey, message, sig);
+        if (verificationError) {
+            break;
+        }
+        if (i % 100 === 0) {
+            console.log(`Benchmark: ${100 * i / 1000}%`);
+        }
+    }
+    if (verificationError) {
+        console.log(`An error occurred while verifying signatures (i=${i})`);
+
+    }
+    else {
+        const t1 = new Date().getTime();
+        const text = `Benchmark completed in ${t1 - t0} ms.`;
+        console.log(text);
+        const endToast = Toast.makeText(text);
+        endToast.show();
+    }
+}
+
 exports.onNavigatingTo = onNavigatingTo;
 exports.onDrawerButtonTap = onDrawerButtonTap;
 exports.scanQRCode = scanQRCode;
 exports.deleteServer = deleteServer;
+exports.startSchnorrBenchmark = startSchnorrBenchmark;
