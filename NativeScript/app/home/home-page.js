@@ -11,7 +11,6 @@ const User = require("../shared/lib/dedjs/object/user/User").get;
 const Kyber = require("@dedis/kyber-js");
 const schnorr = Kyber.sign.schnorr;
 const nist = Kyber.curve.nist;
-const Toast = require("nativescript-toast");
 const Blake = require("@stablelib/blake2xs").BLAKE2Xs;
 
 const HomeViewModel = require("./home-view-model");
@@ -125,8 +124,6 @@ function loadServerStats(server, context) {
 
 function startSchnorrBenchmark(args) {
     console.log("Starting Schnorr benchmark...");
-    const toast = Toast.makeText("Starting Schnorr benchmark...");
-    toast.show();
 
     const group = new nist.Curve(nist.Params.p256);
     const secretKey = group.scalar().pick();
@@ -156,8 +153,6 @@ function startSchnorrBenchmark(args) {
         const t1 = new Date().getTime();
         const text = `Benchmark completed in ${t1 - t0} ms.`;
         console.log(text);
-        const endToast = Toast.makeText(text);
-        endToast.show();
     }
 }
 
