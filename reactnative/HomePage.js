@@ -15,11 +15,11 @@ import Storage from 'react-native-storage';
 import {AsyncStorage} from 'react-native';
 
 const lib = require("./shared/lib");
-const dedjs = lib.dedjs;
-const Convert = dedjs.Convert;
-const UserClass = dedjs.object.user;
-const User = new UserClass();
-User.load();
+const Convert = lib.dedjs.Convert;
+const Net = lib.dedjs.network.NSNet;
+const RequestPath = lib.dedjs.network.RequestPath;
+const DecodeType = lib.dedjs.network.DecodeType;
+
 
 const storage = new Storage({
     // maximum capacity, default 1000
@@ -62,13 +62,30 @@ function saveConodeJSON(conodeJSON) {
  * @param context
  */
 function loadServerStats(server, context) {
-    User.getRosterStatus().then((value) => {
-        const conodeAndStatusPair = User._statusList[0];
-        if (conodeAndStatusPair !== undefined) {
-            context.statsList.empty();
-            context.statsList.load(conodeAndStatusPair);
-        }
-    });
+    this._statusList = [];
+
+    const address = server.websocketAddr;
+    const cothoritySocket = new Net.Socket(address, RequestPath.STATUS);
+    const statusRequestMessage = {};
+    Promise.resolve(cothoritySocket).then( cothoritySocket => {
+            return cothoritySocket.send(RequestPath.STATUS_REQUEST, DecodeType.STATUS_RESPONSE, statusRequestMessage)
+                .then(response => {
+                    response.conode = server;
+                    return response;
+                })
+                .catch(error => {
+                    console.log("couldn't reach server", address, error);
+                    return {
+                        status: {Generic: {field: {Version: error}}},
+                        conode: server
+                    }
+                })
+        }).then(responses => {
+            this._statusList = responses;
+            return this._statusList;
+        });
+    console.log(this._statusList);
+    return this._statusList;
 }
 
 
@@ -89,8 +106,14 @@ class HomePage extends Component {
             this.setState({conodeJSON: ret});
             this.setState({conode: Convert.parseJsonServerIdentity(ret)});
 
-            //TODO fix this failing silently
-            User.addServer(this.state.conode);
+            try {
+
+                loadServerStats(this.state.conode);
+            }
+            catch(error) {
+                console.error(error);
+            }
+
 
             console.debug("Saved conode loaded: " + ret);
         }).catch(err => {
