@@ -62,30 +62,49 @@ function saveConodeJSON(conodeJSON) {
  * @param context
  */
 function loadServerStats(server, context) {
-    this._statusList = [];
+    let _statusList = [];
 
     const address = server.websocketAddr;
-    const cothoritySocket = new Net.Socket(address, RequestPath.STATUS);
+    this.cothoritySocket = new Net.Socket(address, RequestPath.STATUS);
     const statusRequestMessage = {};
-    Promise.resolve(cothoritySocket).then( cothoritySocket => {
+
+    return this.cothoritySocket.send(RequestPath.STATUS_REQUEST, DecodeType.STATUS_RESPONSE, statusRequestMessage)
+        .then(response => {
+            console.log("Server responded");
+            response.conode = server;
+            console.log("Response=",response);
+            return response;
+        })
+        .catch(function(error) {
+            console.log("couldn't reach server", error.message);
+            console.log(error.stack);
+            return {
+                status: {Generic: {field: {Version: error}}},
+                conode: server
+            }
+        })
+    /*Promise.resolve(this.cothoritySocket).then( cothoritySocket => {
             return cothoritySocket.send(RequestPath.STATUS_REQUEST, DecodeType.STATUS_RESPONSE, statusRequestMessage)
                 .then(response => {
+                    console.log("Server responded");
                     response.conode = server;
                     return response;
                 })
-                .catch(error => {
-                    console.log("couldn't reach server", address, error);
+                .catch(function(error) {
+                    console.log("couldn't reach server", error.message);
+                    console.log(error.stack);
                     return {
                         status: {Generic: {field: {Version: error}}},
                         conode: server
                     }
                 })
-        }).then(responses => {
-            this._statusList = responses;
-            return this._statusList;
-        });
-    console.log(this._statusList);
-    return this._statusList;
+    }).then(responses => {
+        console.log("Updating _statusList");
+        _statusList = responses;
+        console.log(_statusList);
+        return _statusList;
+    });*/
+    return _statusList;
 }
 
 
