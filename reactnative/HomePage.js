@@ -19,6 +19,8 @@ const Convert = lib.dedjs.Convert;
 const Net = lib.dedjs.network.NSNet;
 const RequestPath = lib.dedjs.network.RequestPath;
 const DecodeType = lib.dedjs.network.DecodeType;
+const Helper = lib.dedjs.Helper;
+const StatusExtractor = require("./shared/lib/dedjs/extractor/StatusExtractor");
 
 
 const storage = new Storage({
@@ -58,53 +60,108 @@ function saveConodeJSON(conodeJSON) {
 
 /**
  * Triggers the loading of server stats to be displayed
+ * TODO method not working, need to be fixed. Issue might be related to WS in react native
  * @param server
  * @param context
  */
-function loadServerStats(server, context) {
-    let _statusList = [];
+function loadServerStats(server) {
+    console.log("Loading stats for server: " + server.websocketAddr);
 
     const address = server.websocketAddr;
-    this.cothoritySocket = new Net.Socket(address, RequestPath.STATUS);
+    const cothoritySocket = new Net.Socket(address, RequestPath.STATUS);
     const statusRequestMessage = {};
 
-    return this.cothoritySocket.send(RequestPath.STATUS_REQUEST, DecodeType.STATUS_RESPONSE, statusRequestMessage)
-        .then(response => {
-            console.log("Server responded");
-            response.conode = server;
-            console.log("Response=",response);
-            return response;
-        })
-        .catch(function(error) {
-            console.log("couldn't reach server", error.message);
-            console.log(error.stack);
-            return {
-                status: {Generic: {field: {Version: error}}},
-                conode: server
-            }
-        })
-    /*Promise.resolve(this.cothoritySocket).then( cothoritySocket => {
-            return cothoritySocket.send(RequestPath.STATUS_REQUEST, DecodeType.STATUS_RESPONSE, statusRequestMessage)
+    Net.getServerIdentityFromAddress(server.addr)
+        .then(serverIdentity => {
+            cothoritySocket.send(RequestPath.STATUS_REQUEST, DecodeType.STATUS_RESPONSE, statusRequestMessage)
                 .then(response => {
                     console.log("Server responded");
                     response.conode = server;
-                    return response;
+                    response.serveridentity = serverIdentity;
+                    console.log("Response=", response);
+                    let statsList = createStatsList(response);
+
+                    console.log(statsList);
+                    return statsList;
                 })
-                .catch(function(error) {
-                    console.log("couldn't reach server", error.message);
+                .catch(function (error) {
+                    console.log("Error communicating with server.", error.message);
                     console.log(error.stack);
                     return {
                         status: {Generic: {field: {Version: error}}},
                         conode: server
                     }
-                })
-    }).then(responses => {
-        console.log("Updating _statusList");
-        _statusList = responses;
-        console.log(_statusList);
-        return _statusList;
-    });*/
-    return _statusList;
+                });
+        })
+        .catch(error => {
+            console.log("Error getting server identity.", error);
+            console.log(error.stack);
+        });
+}
+
+
+
+function createStatsList(conodeStatus) {
+    let statsList = [];
+
+    const stat = {
+        title: "",
+        info: ""
+    };
+
+    stat.title = "Description";
+    stat.info = StatusExtractor.getDescription(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "Address";
+    stat.info = StatusExtractor.getAddress(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "ID (hex)";
+    stat.info = StatusExtractor.getID(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "Public Key (hex)";
+    stat.info = StatusExtractor.getPublicKey(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "Services";
+    stat.info = StatusExtractor.getServices(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "System";
+    stat.info = StatusExtractor.getSystem(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "Host";
+    stat.info = StatusExtractor.getHost(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "Port";
+    stat.info = StatusExtractor.getPort(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "ConnectionType";
+    stat.info = StatusExtractor.getConnectionType(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "Version";
+    stat.info = StatusExtractor.getVersion(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "TX Bytes";
+    stat.info = StatusExtractor.getTXBytes(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "RX Bytes";
+    stat.info = StatusExtractor.getRXBytes(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    stat.title = "Uptime";
+    stat.info = StatusExtractor.getUptime(conodeStatus);
+    statsList.push(Helper.deepCopy(stat));
+
+    return statsList;
 }
 
 
@@ -129,7 +186,7 @@ class HomePage extends Component {
 
                 loadServerStats(this.state.conode);
             }
-            catch(error) {
+            catch (error) {
                 console.error(error);
             }
 
