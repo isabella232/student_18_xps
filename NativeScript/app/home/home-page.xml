@@ -6,64 +6,66 @@
         xmlns="http://schemas.nativescript.org/tns.xsd">
 
     <ActionBar class="action-bar">
-        <!--
-        Use the NavigationButton as a side-drawer button in Android
-        because ActionItems are shown on the right side of the ActionBar
-        -->
-        <NavigationButton ios:visibility="collapsed" icon="res://menu" tap="onDrawerButtonTap"></NavigationButton>
-        <!--
-        Use the ActionItem for IOS with position set to left. Using the
-        NavigationButton as a side-drawer button in iOS is not possible,
-        because its function is to always navigate back in the application.
-        -->
-        <ActionItem icon="res://navigation/menu"
-                    android:visibility="collapsed"
-                    tap="onDrawerButtonTap"
-                    ios.position="left">
-        </ActionItem>
-        <Label class="action-bar-title" text="Home"></Label>
+        <Label class="action-bar-title" text="XPS - NativeScript"></Label>
     </ActionBar>
 
-    <GridLayout class="page-content" id="statsList"  height="100%" width="100%" rows="*">
-        <Label id="emptyServerLabel"
-               text="You don't have any conode. Feel free to add one!"
-               textWrap="true"
-               visibility="{{ isServerEmpty ?  'visible' : 'collapsed'}}"
-               alignSelf="center"/>
-        <ListView items="{{ statsList, statsList }}"
-                  row="1"
-                  visibility="{{ isServerEmpty ? 'collapsed' : 'visible'}}">
-            <ListView.itemTemplate>
-                <GridLayout class="basic-list" rows="auto,auto" columns="*">
-                    <Label class="list-title" text="{{ info.title }}" textAlignment="left" textWrap="true" row="0"/>
-                    <Label text="{{ info.info }}" textAlignment="left" textWrap="true" row="1"/>
-                </GridLayout>
-            </ListView.itemTemplate>
-        </ListView>
-        <nsFloatingButton:fab
-                id="benchmarkButton"
-                visibility="visible"
-                tap="startSchnorrBenchmark"
-                row="1"
-                icon="res://ic_alarm_white_48dp"
-                rippleColor="#f1f1f1"
-                class="bottom-left fab-button"/>
-        <nsFloatingButton:fab
-                id="addButton"
-                visibility="{{ isServerEmpty ?  'visible' : 'collapsed'}}"
-                tap="scanQRCode"
-                row="1"
-                icon="res://ic_add_white_48dp"
-                rippleColor="#f1f1f1"
-                class="fab-button bottom-right"/>
-        <nsFloatingButton:fab
-                id="deleteServer"
-                visibility="{{ isServerEmpty ? 'collapsed' : 'visible'}}"
-                tap="deleteServer"
-                row="1"
-                icon="res://ic_delete_white_48dp"
-                rippleColor="#f1f1f1"
-                backgroundColor="#e20c00"
-                class="fab-button bottom-right"/>
-    </GridLayout>
+    <TabView id="tabViewContainer" :selectedIndex="selectedIndex">
+        <TabViewItem title="Conode status">
+            <GridLayout class="page-content" id="statsList" height="100%" width="100%" rows="*">
+                <Label id="emptyServerLabel"
+                       text="You don't have any conode. Feel free to add one!"
+                       textWrap="true"
+                       visibility="{{ isServerEmpty ?  'visible' : 'collapsed'}}"
+                       verticalAlignment="center"/>
+                <ListView items="{{ statsList, statsList }}"
+                          row="1"
+                          visibility="{{ isServerEmpty ? 'collapsed' : 'visible'}}">
+                    <ListView.itemTemplate>
+                        <GridLayout class="basic-list" rows="auto,auto" columns="*">
+                            <Label class="list-title" text="{{ info.title }}" textAlignment="left" textWrap="true"
+                                   row="0"/>
+                            <Label text="{{ info.info }}" textAlignment="left" textWrap="true" row="1"/>
+                        </GridLayout>
+                    </ListView.itemTemplate>
+                </ListView>
+                <nsFloatingButton:fab
+                        id="addButton"
+                        visibility="{{ isServerEmpty ?  'visible' : 'collapsed'}}"
+                        tap="scanQRCode"
+                        row="1"
+                        icon="res://ic_add_white_48dp"
+                        rippleColor="#f1f1f1"
+                        class="fab-button bottom-right"/>
+                <nsFloatingButton:fab
+                        id="deleteServer"
+                        visibility="{{ isServerEmpty ? 'collapsed' : 'visible'}}"
+                        tap="deleteServer"
+                        row="1"
+                        icon="res://ic_delete_white_48dp"
+                        rippleColor="#f1f1f1"
+                        backgroundColor="#e20c00"
+                        class="fab-button bottom-right"/>
+            </GridLayout>
+        </TabViewItem>
+        <TabViewItem title="Benchmark">
+            <GridLayout class="page-content"
+                        id="statsList"
+                        height="100%"
+                        width="100%"
+                        rows="*">
+                <Label id="benchmarkLabel"
+                       text="{{benchmarkStatus}}"
+                       verticalAlignment="center"
+                       textWrap="true"/>
+                <nsFloatingButton:fab
+                        id="benchmarkButton"
+                        visibility="visible"
+                        tap="startSchnorrBenchmark"
+                        row="1"
+                        icon="res://ic_alarm_white_48dp"
+                        rippleColor="#f1f1f1"
+                        class="fab-button"/>
+            </GridLayout>
+        </TabViewItem>
+    </TabView>
 </Page>
