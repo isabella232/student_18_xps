@@ -34,38 +34,38 @@ For IDEs, be aware that the ``--clean`` might be set by default. This ensures a 
 
 ## What's working
  - QR Code reader:
-  - [x] Android
-  - [x] iOS
+   - [x] Android
+   - [x] iOS
 
 
  - Store Conode info on device memory:
-  - [x] Android
-  - [x] iOS
+   - [x] Android
+   - [x] iOS
 
 
  - Load Conode info from device memory:
-  - [x] Android
-  - [x] iOS
+   - [x] Android
+   - [x] iOS
 
 
  - Tab Layout:
-  - [x] Android
-  - [x] iOS
+   - [x] Android
+   - [x] iOS
 
 
  - Display status of a conode:
-  - [x] Android
-  - [x] iOS
+   - [x] Android
+   - [x] iOS
 
 
  - Has necessary libraries to perform basic cryptographic operations on elliptic curves:
-  - [x] Android
-  - [x] iOS
+   - [x] Android
+   - [x] iOS
 
 
  - Benchmark (1000 Schnorr's signatures and verifications):
-  - [x] Android (but on UI thread)
-  - [x] iOS (but on UI thread)
+   - [x] Android (but on UI thread)
+   - [x] iOS (but on UI thread)
 
 ## Known issues
    - Due to an issue with [Workers](https://docs.nativescript.org/core-concepts/multithreading-model) which does not allow to load Kyber library in background, the benchmark is performed on the UI thread i.e. the UI will freeze while performing the benchmark.
