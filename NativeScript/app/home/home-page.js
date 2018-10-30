@@ -8,7 +8,6 @@ const dedjs = lib.dedjs;
 const Convert = dedjs.Convert;
 const ScanToReturn = lib.scan_to_return;
 const User = require("../shared/lib/dedjs/object/user/User").get;
-
 const HomeViewModel = require("./home-view-model");
 
 
@@ -118,7 +117,72 @@ function loadServerStats(server, context) {
     });
 }
 
+function startSchnorrBenchmark(args) {
+    const page = args.object;
+    //TODO fix background worker crashing...
+    /*const worker = new Worker("./benchmarkWorker.js");
+    worker.postMessage({ kyber: require("@dedis/kyber-js") });
+
+    worker.onmessage = function(msg) {
+        if (msg.data.success) {
+            if (msg.data.status === 100) {
+                page.bindingContext.set("benchmarkStatus", `Benchmark completed in ${msg.data.time}ms.`);
+                console.log(`Benchmark completed in ${msg.data.time}ms.`);
+                worker.terminate();
+            }
+            else {
+                page.bindingContext.set("benchmarkStatus", `Benchmark: ${msg.data.status}%`);
+            }
+        }
+        else {
+            page.bindingContext.set("benchmarkStatus", msg.data.errorMsg);
+            console.log(msg.data.errorMsg);
+            worker.terminate();
+        }
+    };
+
+    worker.onerror = function(err) {
+        console.log(`An unhandled error occurred in worker: ${err.filename}, line: ${err.lineno} :`);
+        console.log(err.stackTrace);
+    };*/
+    console.log("Starting Schnorr benchmark...");
+    const Kyber = require("@dedis/kyber-js");
+    const schnorr = Kyber.sign.schnorr;
+    const nist = Kyber.curve.nist;
+
+    const group = new nist.Curve(nist.Params.p256);
+    const secretKey = group.scalar().pick();
+    const publicKey = group.point().mul(secretKey, null);
+
+    const t0 = new Date().getMilliseconds();
+
+    let i;
+    let verificationError = false;
+
+    for (i = 0; i < 1000; i++) {
+        const message = new Uint8Array([i, i + 1, i + 2, i + 3]);
+
+        const sig = schnorr.sign(group, secretKey, message);
+
+        verificationError = !schnorr.verify(group, publicKey, message, sig);
+        //page.bindingContext.set("benchmarkStatus", `Benchmark: ${100 * i / 1000}%`);
+
+
+        if (verificationError) {
+            console.log(`An error occurred while verifying signature (i=${i})`);
+            page.bindingContext.set("benchmarkStatus", `An error occurred while verifying signature (i=${i})`);
+            break;
+        }
+
+        if (i % 100 === 0) {
+            console.log(`Benchmark: ${100 * i / 1000}%`);
+        }
+    }
+    page.bindingContext.set("benchmarkStatus", `Benchmark completed in ${new Date().getTime() - t0}ms.`);
+}
+
 exports.onNavigatingTo = onNavigatingTo;
 exports.onDrawerButtonTap = onDrawerButtonTap;
 exports.scanQRCode = scanQRCode;
 exports.deleteServer = deleteServer;
+exports.startSchnorrBenchmark = startSchnorrBenchmark;
