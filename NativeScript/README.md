@@ -24,29 +24,48 @@ Simply run
 ``` shell
 tns run android
 ```
+or
+``` shell
+tns run ios
+```
 in your terminal. The first compilation will take minutes, but afterwards editing ``.js`` files will trigger a refresh of the app's files within seconds, as it won't recompile all libraries.
 
 For IDEs, be aware that the ``--clean`` might be set by default. This ensures a proper recompilation of the libraries used, but also extend compilation time from seconds to minutes if you only edit ``.js`` files.
 
 ## What's working
  - QR Code reader:
-  - Android : ✔
-  - iOS: ✔
+  - [x] Android
+  - [x] iOS
+
+
  - Store Conode info on device memory:
-  - Android : ✔
-  - iOS: ✔
+  - [x] Android
+  - [x] iOS
+
+
  - Load Conode info from device memory:
-  - Android : ✔
-  - iOS: ✔
+  - [x] Android
+  - [x] iOS
+
+
  - Tab Layout:
-  - Android : ✔
-  - iOS: ✔
- - Display status of conode:
-  - Android : ✔
-  - iOS: ✔
- - Benchmark (1000 Schnorr's signatures):
-  - Android : ✔ (but on UI thread)
-  - iOS: ✔ (but on UI thread)
+  - [x] Android
+  - [x] iOS
+
+
+ - Display status of a conode:
+  - [x] Android
+  - [x] iOS
+
+
+ - Has necessary libraries to perform basic cryptographic operations on elliptic curves:
+  - [x] Android
+  - [x] iOS
+
+
+ - Benchmark (1000 Schnorr's signatures and verifications):
+  - [x] Android (but on UI thread)
+  - [x] iOS (but on UI thread)
 
 ## Known issues
    - Due to an issue with [Workers](https://docs.nativescript.org/core-concepts/multithreading-model) which does not allow to load Kyber library in background, the benchmark is performed on the UI thread i.e. the UI will freeze while performing the benchmark.
