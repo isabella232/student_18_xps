@@ -23,7 +23,6 @@ const DecodeType = lib.dedjs.network.DecodeType;
 const Helper = lib.dedjs.Helper;
 const StatusExtractor = require("./shared/lib/dedjs/extractor/StatusExtractor");
 
-
 const storage = new Storage({
     // maximum capacity, default 1000
     size: 1000,
@@ -200,7 +199,7 @@ class HomePage extends Component {
     BenchmarkRoute = () => (
         <View style={styles.container}>
             <Text style={styles.welcome}>
-                {"Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations)."}
+                {this.state.benchmarkStatus}
             </Text>
             <ActionButton
                 buttonColor='#2196F3'
@@ -222,6 +221,7 @@ class HomePage extends Component {
                 { key: 'conodeStatsRoute', title: 'Conode status' },
                 { key: 'benchmarkRoute', title: 'Benchmark' },
             ],
+            benchmarkStatus: "Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations)."
         };
         // here we check the memory and load the stored conode if any.
         storage.load({
@@ -275,14 +275,57 @@ class HomePage extends Component {
                         benchmarkRoute: this.BenchmarkRoute,
                     })}
                     onIndexChange={index => this.setState({ index })}
-                    initialLayout={{ width: Dimensions.get('window').width }}
+                    initialLayout={{ width: Dimensions.get('window').width, height:  0}}
                 />
             </View>
         );
     }
 
     startBenchmark() {
-        //TODO run 1000 signatures in background thread
+        this.setState({benchmarkStatus: `Starting Schnorr benchmark...`});
+        console.log("Starting Schnorr benchmark...");
+
+        const Kyber = require("@dedis/kyber-js");
+        console.log("Loaded Kyber");
+        const schnorr = Kyber.sign.schnorr;
+        console.log("Loaded schnorr");
+        const nist = Kyber.curve.nist;
+        console.log("Loaded nist");
+
+        const group = new nist.Curve(nist.Params.p256);
+        const secretKey = group.scalar().pick();
+        const publicKey = group.point().mul(secretKey, null);
+
+        const t0 = new Date().getMilliseconds();
+
+        let i;
+        let verificationError = false;
+
+        for (i = 0; i < 1000; i++) {
+            const message = new Uint8Array([i, i + 1, i + 2, i + 3]);
+
+            const sig = schnorr.sign(group, secretKey, message);
+
+            verificationError = !schnorr.verify(group, publicKey, message, sig);
+
+            this.setState({benchmarkStatus: `Benchmark: ${100 * i / 1000}%`});
+
+
+            if (verificationError) {
+                this.setState({benchmarkStatus: `An error occurred while verifying signature (i=${i})`});
+                console.log(`An error occurred while verifying signature (i=${i})`);
+                break;
+            }
+
+            if (i % 100 === 0) {
+                console.log(`Benchmark: ${100 * i / 1000}%`);
+            }
+        }
+        if(!verificationError){
+            const total_time = new Date().getTime() - t0;
+            this.setState({benchmarkStatus: `Benchmark completed in ${total_time}ms.`});
+            console.log(`Benchmark completed in ${total_time}ms.`);
+        }
     }
 }
 
