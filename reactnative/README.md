@@ -36,38 +36,38 @@ in your terminal. The first compilation will take minutes, but afterwards editin
 
 ## What's working
  - QR Code reader:
-  - [x] Android
-  - [x] iOS
+   - [x] Android
+   - [x] iOS
 
 
  - Store Conode info on device memory:
-  - [x] Android
-  - [x] iOS
+   - [x] Android
+   - [x] iOS
 
 
  - Load Conode info from device memory:
-  - [x] Android
-  - iOS
+   - [x] Android
+   - [ ] iOS
 
 
  - Tab Layout:
-  - [x] Android
-  - [ ] iOS (no build since commit [85968ac](https://github.com/dedis/student_18_xps/commit/85968ac2f4de837898fd564426ce50084146830b))
+   - [x] Android
+   - [ ] iOS (no build since commit [85968ac](https://github.com/dedis/student_18_xps/commit/85968ac2f4de837898fd564426ce50084146830b))
 
 
  - Display status of a conode:
-  - [ ] Android (React Native's websocket implementation causes the connection to drop unexpectedly when querying a server's identity)
-  - [ ] iOS (same as android)
+   - [ ] Android (React Native's websocket implementation causes the connection to drop unexpectedly when querying a server's identity)
+   - [ ] iOS (same as android)
 
 
  - Has necessary libraries to perform basic cryptographic operations on elliptic curves:
-  - [x] Android
-  - [x] iOS
+   - [x] Android
+   - [x] iOS
 
 
  - Benchmark (1000 Schnorr's signatures and verifications):
-  - [x] Android (but on UI thread)
-  - [x] iOS (but on UI thread)
+   - [x] Android (but on UI thread)
+   - [x] iOS (but on UI thread)
 
 ## Known issues
  - React Native's websocket implementation causes the connection to drop unexpectedly when querying a server's identity. Due to this, it is currently not possible to get a Conode's status.
