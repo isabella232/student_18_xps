@@ -53,6 +53,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String _conodeJSON = "";
   bool errorScanning = false;
+  String benchmarkStatus = "Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations).";
 
   @override
   void initState() {
@@ -120,6 +121,10 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  startBenchmark() {
+    // TODO implement benchmark
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -130,38 +135,36 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
 
     return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: new AppBar(
-            // Here we take the value from the MyHomePage object that was created by
-            // the App.build method, and use it to set our appbar title.
-            title: new Text(widget.title),
-            bottom: TabBar(
-              tabs: [
-                Tab(text: "Conode Status"),
-                Tab(text: "Benchmark"),
-              ],
-            ),
+      length: 2,
+      child: Scaffold(
+        appBar: new AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: new Text(widget.title),
+          bottom: TabBar(
+            tabs: [
+              Tab(text: "Conode Status"),
+              Tab(text: "Benchmark"),
+            ],
           ),
-          body: TabBarView(
-            children: [
-              new Center(
-                // Center is a layout widget. It takes a single child and positions it
-                // in the middle of the parent.
+        ),
+        body: TabBarView(
+          children: [
+            Scaffold(
+              floatingActionButton: (_conodeJSON == "" || errorScanning
+                  ? new FloatingActionButton(
+                      onPressed: scan,
+                      tooltip: 'Add',
+                      child: new Icon(Icons.add),
+                    )
+                  : new FloatingActionButton(
+                      backgroundColor: Color.fromARGB(255, 255, 0, 0),
+                      onPressed: _deleteJSON,
+                      tooltip: 'Delete',
+                      child: new Icon(Icons.delete),
+                    )),
+              body: new Center(
                 child: new Column(
-                  // Column is also layout widget. It takes a list of children and
-                  // arranges them vertically. By default, it sizes itself to fit its
-                  // children horizontally, and tries to be as tall as its parent.
-                  //
-                  // Invoke "debug paint" (press "p" in the console where you ran
-                  // "flutter run", or select "Toggle Debug Paint" from the Flutter tool
-                  // window in IntelliJ) to see the wireframe for each widget.
-                  //
-                  // Column has various properties to control how it sizes itself and
-                  // how it positions its children. Here we use mainAxisAlignment to
-                  // center the children vertically; the main axis here is the vertical
-                  // axis because Columns are vertical (the cross axis would be
-                  // horizontal).
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     _conodeJSON == "" || errorScanning
@@ -172,23 +175,23 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
-              Icon(Icons.alarm), //TODO perform benchmark here
-            ],
-          ),
-          floatingActionButton: (_conodeJSON == "" || errorScanning
-              ? new FloatingActionButton(
-                  onPressed: scan,
-                  tooltip: 'Add',
-                  child: new Icon(Icons.add),
-                )
-              : new FloatingActionButton(
-                  backgroundColor: Color.fromARGB(255, 255, 0, 0),
-                  onPressed: _deleteJSON,
-                  tooltip: 'Delete',
-                  child: new Icon(Icons.delete),
-                ) // This trailing comma makes auto-formatting nicer for build methods.
+            ),
+            Scaffold(
+              floatingActionButton: new FloatingActionButton(
+                onPressed: startBenchmark,
+                tooltip: 'Benchmark',
+                child: new Icon(Icons.alarm),
+              ),
+              body: new Center(
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[new Text(benchmarkStatus)],
+                ),
+              ),
+            ),
+          ],
         ),
-        ),
+      ),
     );
   }
 }
