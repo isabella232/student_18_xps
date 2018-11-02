@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io' show Platform;
 
 void main() => runApp(new MyApp());
 
@@ -55,8 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String _conodeJSON = "";
   bool errorScanning = false;
-  String benchmarkStatus = "Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations).";
-
+  String benchmarkStatus =
+      "Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations).";
 
   @override
   void initState() {
@@ -125,29 +126,38 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<Null> startBenchmark() async {
+    bool displayBenchmarkTime = true;
     String benchmarkStatus = "Benchmark started...";
     int start = new DateTime.now().millisecondsSinceEpoch;
-    for (int i=0; i <1000; i++){
+    for (int i = 0; i < 1000; i++) {
       try {
-        final bool signValid = await platform.invokeMethod('schnorrSignAndVerify');
+        final bool signValid =
+            await platform.invokeMethod('schnorrSignAndVerify');
         if (signValid) {
-          benchmarkStatus = "Benchmark: ${100*i/1000}%";
+          benchmarkStatus = "Benchmark: ${100 * i / 1000}%";
         }
-      } on PlatformException catch (e) {
-        benchmarkStatus = "Failed to start Schnorr's signature benchmark '${e.message}'.";
+      } on MissingPluginException catch (e) {
+        benchmarkStatus =
+            "Feature not implemented on '${Platform.operatingSystem}'.";
+        displayBenchmarkTime = false;
+      } catch (e) {
+        benchmarkStatus =
+            "Failed to start Schnorr's signature benchmark '${e.message}'.";
+        displayBenchmarkTime = false;
       }
 
       setState(() {
         this.benchmarkStatus = benchmarkStatus;
       });
     }
-    int end = new DateTime.now().millisecondsSinceEpoch;
-    setState(() {
-      this.benchmarkStatus = "Benchmark completed in ${end - start}ms";
-    });
 
+    if (displayBenchmarkTime) {
+      int end = new DateTime.now().millisecondsSinceEpoch;
+      setState(() {
+        this.benchmarkStatus = "Benchmark completed in ${end - start}ms";
+      });
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
