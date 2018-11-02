@@ -51,9 +51,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const platform = const MethodChannel('ch.epfl.dedis/cothority');
+
   String _conodeJSON = "";
   bool errorScanning = false;
   String benchmarkStatus = "Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations).";
+
 
   @override
   void initState() {
@@ -121,9 +124,30 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  startBenchmark() {
-    // TODO implement benchmark
+  Future<Null> startBenchmark() async {
+    String benchmarkStatus = "Benchmark started...";
+    int start = new DateTime.now().millisecondsSinceEpoch;
+    for (int i=0; i <1000; i++){
+      try {
+        final bool signValid = await platform.invokeMethod('schnorrSignAndVerify');
+        if (signValid) {
+          benchmarkStatus = "Benchmark: ${100*i/1000}%";
+        }
+      } on PlatformException catch (e) {
+        benchmarkStatus = "Failed to start Schnorr's signature benchmark '${e.message}'.";
+      }
+
+      setState(() {
+        this.benchmarkStatus = benchmarkStatus;
+      });
+    }
+    int end = new DateTime.now().millisecondsSinceEpoch;
+    setState(() {
+      this.benchmarkStatus = "Benchmark completed in ${end - start}ms";
+    });
+
   }
+
 
   @override
   Widget build(BuildContext context) {
