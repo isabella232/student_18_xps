@@ -1,10 +1,11 @@
-daimport 'dart:async';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io' show Platform;
+import 'dart:convert';
 
 void main() => runApp(new MyApp());
 
@@ -101,10 +102,16 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     try {
-      //TODO load status map
-      String status = await platform.invokeMethod('getConodeStatus', {"json":this._conodeJSON});
+      //TODO parse status map
+      String statusJSON = await platform.invokeMethod('getConodeStatus', {"json":this._conodeJSON});
+      Map decodedJSON = jsonDecode(statusJSON);
+      String statusString = "";
+      decodedJSON.forEach((key, value) {
+        statusString += key + ": " + value +"\n";
+
+      });
       setState(() {
-        this._conodeStatus = status;
+        this._conodeStatus = statusString;
       });
 
     } on MissingPluginException catch (e) {

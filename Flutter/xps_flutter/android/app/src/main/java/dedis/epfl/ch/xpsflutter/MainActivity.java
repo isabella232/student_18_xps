@@ -98,8 +98,7 @@ public class MainActivity extends FlutterActivity {
 
             StatusProto.Response resp = StatusProto.Response.parseFrom(msg);
             Map<String, OnetProto.Status> statusMap = resp.getStatusMap();
-
-            JSONObject jsonData = getJsonFromMap(resp.getStatusMap());
+            JSONObject jsonData = getJsonFromMap(statusMap.get("Db").getFieldMap());
             return jsonData.toString(4);
         } catch (InvalidProtocolBufferException e) {
             throw new CothorityCommunicationException(e);
@@ -108,12 +107,12 @@ public class MainActivity extends FlutterActivity {
         }
     }
 
-    private static JSONObject getJsonFromMap(Map<String, OnetProto.Status> map) throws JSONException {
+    private static JSONObject getJsonFromMap(Map<String, ?> map) throws JSONException {
         JSONObject jsonData = new JSONObject();
         for (String key : map.keySet()) {
             Object value = map.get(key);
             if (value instanceof Map<?, ?>) {
-                value = getJsonFromMap((Map<String, OnetProto.Status>) value);
+                value = getJsonFromMap((Map<String, String>) value);
             }
             jsonData.put(key, value);
         }
