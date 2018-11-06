@@ -4,10 +4,12 @@ import 'package:flutter/rendering.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io' show Platform;
 
 void main() => runApp(new MyApp());
 
-const String DEFAULT_CONODE_TEXT = 'You have no conode stored. Feel free to add one!';
+const String DEFAULT_CONODE_TEXT =
+    'You have no conode stored. Feel free to add one!';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -50,9 +52,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const platform = const MethodChannel('ch.epfl.dedis/cothority');
+
   String _conodeJSON = "";
   bool errorScanning = false;
-
+  String benchmarkStatus =
+      "Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations).";
 
   @override
   void initState() {
@@ -86,6 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
       this.errorScanning = false;
     });
   }
+
   Future scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
@@ -94,7 +100,6 @@ class _MyHomePageState extends State<MyHomePage> {
         this.errorScanning = false;
       });
       _saveJSON();
-
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
@@ -106,15 +111,50 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       }
       setState(() => this.errorScanning = true);
-    } on FormatException{
+    } on FormatException {
       setState(() {
-        this._conodeJSON = 'null (User returned using the "back"-button before scanning anything. Result)';
+        this._conodeJSON =
+            'null (User returned using the "back"-button before scanning anything. Result)';
         this.errorScanning = true;
       });
     } catch (e) {
       setState(() {
         this._conodeJSON = 'Unknown error: $e';
         this.errorScanning = true;
+      });
+    }
+  }
+
+  Future<Null> startBenchmark() async {
+    bool displayBenchmarkTime = true;
+    String benchmarkStatus = "Benchmark started...";
+    int start = new DateTime.now().millisecondsSinceEpoch;
+    for (int i = 0; i < 1000; i++) {
+      try {
+        final bool signValid =
+            await platform.invokeMethod('schnorrSignAndVerify');
+        if (signValid) {
+          benchmarkStatus = "Benchmark: ${100 * i / 1000}%";
+        }
+      } on MissingPluginException catch (e) {
+        benchmarkStatus =
+            "Feature not implemented on '${Platform.operatingSystem}'.";
+        displayBenchmarkTime = false;
+      } catch (e) {
+        benchmarkStatus =
+            "Failed to start Schnorr's signature benchmark '${e.message}'.";
+        displayBenchmarkTime = false;
+      }
+
+      setState(() {
+        this.benchmarkStatus = benchmarkStatus;
+      });
+    }
+
+    if (displayBenchmarkTime) {
+      int end = new DateTime.now().millisecondsSinceEpoch;
+      setState(() {
+        this.benchmarkStatus = "Benchmark completed in ${end - start}ms";
       });
     }
   }
@@ -128,54 +168,64 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
 
-    return new Scaffold(
-      appBar: new AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: new Text(widget.title),
-      ),
-      body: new Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: new Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug paint" (press "p" in the console where you ran
-          // "flutter run", or select "Toggle Debug Paint" from the Flutter tool
-          // window in IntelliJ) to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _conodeJSON == "" || errorScanning ?
-            new Text(
-              DEFAULT_CONODE_TEXT
-            ) :
-            new Text(
-              _conodeJSON,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: new AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: new Text(widget.title),
+          bottom: TabBar(
+            tabs: [
+              Tab(text: "Conode Status"),
+              Tab(text: "Benchmark"),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            Scaffold(
+              floatingActionButton: (_conodeJSON == "" || errorScanning
+                  ? new FloatingActionButton(
+                      onPressed: scan,
+                      tooltip: 'Add',
+                      child: new Icon(Icons.add),
+                    )
+                  : new FloatingActionButton(
+                      backgroundColor: Color.fromARGB(255, 255, 0, 0),
+                      onPressed: _deleteJSON,
+                      tooltip: 'Delete',
+                      child: new Icon(Icons.delete),
+                    )),
+              body: new Center(
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _conodeJSON == "" || errorScanning
+                        ? new Text(DEFAULT_CONODE_TEXT)
+                        : new Text(
+                            _conodeJSON,
+                          ),
+                  ],
+                ),
+              ),
+            ),
+            Scaffold(
+              floatingActionButton: new FloatingActionButton(
+                onPressed: startBenchmark,
+                tooltip: 'Benchmark',
+                child: new Icon(Icons.alarm),
+              ),
+              body: new Center(
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[new Text(benchmarkStatus)],
+                ),
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton:
-      _conodeJSON == "" || errorScanning ?
-      new FloatingActionButton(
-        onPressed: scan,
-        tooltip: 'Add',
-        child: new Icon(Icons.add),
-      ) :
-      new FloatingActionButton(
-        backgroundColor: Color.fromARGB(255, 255, 0, 0),
-        onPressed: _deleteJSON,
-        tooltip: 'Delete',
-        child: new Icon(Icons.delete),
-      ) , // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
