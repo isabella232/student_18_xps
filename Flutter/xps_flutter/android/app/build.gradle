@@ -67,7 +67,7 @@ dependencies {
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compile group: 'net.i2p.crypto', name: 'eddsa', version: '0.2.0'
     compile group: 'com.moandjiezana.toml', name: 'toml4j', version: '0.7.2'
-
+    compile 'org.json:json:20180813'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
