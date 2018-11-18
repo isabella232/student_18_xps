@@ -1,0 +1,7 @@
+{
+  "name": "xps_ionic",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}
