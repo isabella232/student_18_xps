@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {ModalController, NavController, NavParams, ToastController} from 'ionic-angular';
 import {ScanQrPage} from "../scan-qr/scan-qr";
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'page-stats',
@@ -11,15 +12,30 @@ export class StatsPage {
   constructor(public navCtrl: NavController,
               private modalController: ModalController,
               public navParams: NavParams,
-              private toastCtrl: ToastController) {
-    this.conodeJSON = navParams.get('data');
+              private toastCtrl: ToastController,
+              private storage: Storage) {
+    storage.get('conodeJSON').then((val) => {
+      if(val === undefined ||val === null){
+        console.log('No conode json stored.');
+      } else {
+        console.log(`Loaded stored conode json.${val}`);
+        this.conodeJSON = val;
+        //TODO load server stats here.
+      }
+    });
 
   }
 
 
   ionViewWillEnter(){
-    this.conodeJSON = this.navParams.get("conodeJSON");
-    console.log(this.conodeJSON);
+    let tempConodeJSON = this.navParams.get("conodeJSON");
+    if(tempConodeJSON === undefined){
+      console.log(`Received undefined conode JSON.`);
+    }else {
+      this.conodeJSON = tempConodeJSON;
+      this.storage.set('conodeJSON', tempConodeJSON);
+      //TODO load server stats here.
+    }
   }
 
 
