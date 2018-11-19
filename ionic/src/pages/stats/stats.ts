@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {ModalController, NavController, NavParams, ToastController} from 'ionic-angular';
 import {ScanQrPage} from "../scan-qr/scan-qr";
 import { Storage } from '@ionic/storage';
+import { FabContainer } from 'ionic-angular';
+
 
 @Component({
   selector: 'page-stats',
@@ -9,6 +11,7 @@ import { Storage } from '@ionic/storage';
 })
 export class StatsPage {
   private conodeJSON: string;
+  @ViewChild('fab') addFab : FabContainer;
   constructor(public navCtrl: NavController,
               private modalController: ModalController,
               public navParams: NavParams,
@@ -39,8 +42,15 @@ export class StatsPage {
   }
 
 
-  scanOnclick() {
+  scanOnclick(fab: FabContainer) {
+    fab.close();
     this.navCtrl.push(ScanQrPage);
+  }
+
+  deleteConodeJSON(fab: FabContainer) {
+    fab.close();
+    this.storage.remove('conodeJSON');
+    this.conodeJSON = undefined;
   }
 
 

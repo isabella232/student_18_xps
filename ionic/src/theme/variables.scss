@@ -38,7 +38,9 @@ $colors: (
   secondary:  #32db64,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #222
+  dark:       #222,
+  md-red:     #f44336,
+  md-green:   #4CAF50
 );
 
 
@@ -90,3 +92,4 @@ $colors: (
 ion-app.cameraView, ion-app.cameraView ion-content, ion-app.cameraView .nav-decor {
   background: transparent none !important;
 }
+
