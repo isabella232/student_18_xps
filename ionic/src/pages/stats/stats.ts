@@ -4,7 +4,6 @@ import {ScanQrPage} from "../scan-qr/scan-qr";
 import { Storage } from '@ionic/storage';
 import { FabContainer } from 'ionic-angular';
 
-
 @Component({
   selector: 'page-stats',
   templateUrl: 'stats.html'
