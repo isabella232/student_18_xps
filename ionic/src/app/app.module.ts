@@ -11,6 +11,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { QRScanner } from '@ionic-native/qr-scanner';
+import {ScanQrPage} from "../pages/scan-qr/scan-qr";
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { QRScanner } from '@ionic-native/qr-scanner';
     AboutPage,
     ContactPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    ScanQrPage
   ],
   imports: [
     BrowserModule,
@@ -30,7 +32,8 @@ import { QRScanner } from '@ionic-native/qr-scanner';
     AboutPage,
     ContactPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    ScanQrPage
   ],
   providers: [
     StatusBar,

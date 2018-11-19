@@ -1,17 +1,15 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Ionic Blank
+      Conode Status
     </ion-title>
-    <ion-buttons end>
-      <button ion-button (click)="scanOnclick()"> <ion-icon name="camera"> </ion-icon></button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
+  <h1 ion-text>{{conodeJSON}}</h1>
   <ion-fab right bottom margin>
-    <button ion-fab (click)="scanOnclick()"><ion-icon name="camera">
+    <button ion-fab (click)="scanOnclick()"><ion-icon name="add">
 
     </ion-icon></button>
   </ion-fab>

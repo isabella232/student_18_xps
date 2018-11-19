@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import {IonicPage, NavController, NavParams, ToastController, ViewController} from 'ionic-angular';
 import {QRScanner, QRScannerStatus} from "@ionic-native/qr-scanner";
-import {Subscriber} from "rxjs/Subscriber";
-
 /**
  * Generated class for the ScanQrPage page.
  *
@@ -16,9 +14,8 @@ import {Subscriber} from "rxjs/Subscriber";
   templateUrl: 'scan-qr.html',
 })
 export class ScanQrPage {
-  private isBackMode: boolean = true;
-  private isFlashLightOn: boolean = false;
   private scanSub: any;
+  private conodeJSON: string;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -38,8 +35,12 @@ export class ScanQrPage {
           console.log('Camera Permission Given');
 
           // start scanning
-          this.scanSub = this.qrScanner.scan().subscribe((text: string) => {
-            this.presentToast(text);
+          this.scanSub = this.qrScanner.scan().subscribe((conodeJSON: string) => {
+            this.conodeJSON = conodeJSON;
+            this.navCtrl.getPrevious().data.conodeJSON = conodeJSON;
+            this.navCtrl.pop();
+            //this.presentToast(text);
+
           });
 
           // show camera preview
@@ -62,36 +63,6 @@ export class ScanQrPage {
 
   closeModal() {
     this.viewController.dismiss();
-  }
-
-
-  toggleFlashLight(){
-
-    /** Default isFlashLightOn is false ,
-     * enable it if false **/
-
-    this.isFlashLightOn = !this.isFlashLightOn;
-    if(this.isFlashLightOn){
-      this.qrScanner.enableLight();
-    }
-    else{
-      this.qrScanner.disableLight();
-    }
-
-  }
-  toggleCamera(){
-    /** Toggle Camera , Default is isBackMode is true , toggle
-     * to false to enable front camera and vice versa.
-     *
-     * @type {boolean}
-     */
-    this.isBackMode =  !this.isBackMode;
-    if(this.isBackMode){
-      this.qrScanner.useFrontCamera();
-    }
-    else{
-      this.qrScanner.useBackCamera();
-    }
   }
 
   presentToast(text:string) {
