@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Conode Status
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <h1 ion-text>{{conodeJSON}}</h1>
+  <ion-fab right bottom margin #fab>
+    <button ion-fab ><ion-icon name="settings"></ion-icon></button>
+    <ion-fab-list side="top">
+      <button ion-fab color="md-red" (click)="deleteConodeJSON(fab)"><ion-icon name="trash"></ion-icon></button>
+      <button ion-fab color="md-green" (click)="scanOnclick(fab)"><ion-icon name="add"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>

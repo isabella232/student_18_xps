@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      About
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <h1 ion-text>{{benchmarkStatus}}</h1>
+  <ion-fab right bottom margin #fab>
+    <button ion-fab (click)="startBenchmark()"><ion-icon name="timer"></ion-icon></button>
+  </ion-fab>
+
+</ion-content>

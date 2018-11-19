@@ -5,6 +5,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io' show Platform;
+import 'dart:convert';
 
 void main() => runApp(new MyApp());
 
@@ -55,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const platform = const MethodChannel('ch.epfl.dedis/cothority');
 
   String _conodeJSON = "";
+  String _conodeStatus = "";
   bool errorScanning = false;
   String benchmarkStatus =
       "Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations).";
@@ -69,9 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
   _loadJSON() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _conodeJSON = (prefs.getString('conodeJSON') ?? "");
+      this._conodeJSON = (prefs.getString('conodeJSON') ?? "");
       this.errorScanning = false;
     });
+    _updateStatus();
   }
 
   //Saves the conode JSON to memory
@@ -89,7 +92,37 @@ class _MyHomePageState extends State<MyHomePage> {
       prefs.remove('conodeJSON');
       this._conodeJSON = "";
       this.errorScanning = false;
+      this._conodeStatus = "";
     });
+  }
+
+  _updateStatus() async {
+    print("Updating conode status...");
+    if(this._conodeJSON == ""){
+      return;
+    }
+    try {
+      //TODO parse status map
+      String statusJSON = await platform.invokeMethod('getConodeStatus', {"json":this._conodeJSON});
+      Map decodedJSON = jsonDecode(statusJSON);
+      String statusString = "";
+      decodedJSON.forEach((key, value) {
+        statusString += key + ": " + value +"\n";
+
+      });
+      setState(() {
+        this._conodeStatus = statusString;
+      });
+
+    } on MissingPluginException catch (e) {
+      setState(() {
+        this._conodeStatus = "Feature not implemented on '${Platform.operatingSystem}'.";
+      });
+    } catch (e) {
+      setState(() {
+        this._conodeStatus = "Failed to update conode's status: '${e.message}'.";
+      });
+    }
   }
 
   Future scan() async {
@@ -198,15 +231,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: new Icon(Icons.delete),
                     )),
               body: new Center(
-                child: new Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    _conodeJSON == "" || errorScanning
-                        ? new Text(DEFAULT_CONODE_TEXT)
-                        : new Text(
-                            _conodeJSON,
-                          ),
-                  ],
+                child: new SingleChildScrollView(
+                  child: _conodeStatus == "" || errorScanning
+                      ? new Text(DEFAULT_CONODE_TEXT)
+                      : new Text(
+                    _conodeStatus,
+                  ),
                 ),
               ),
             ),

@@ -154,13 +154,13 @@ function startSchnorrBenchmark(args) {
     const secretKey = group.scalar().pick();
     const publicKey = group.point().mul(secretKey, null);
 
-    const t0 = new Date().getMilliseconds();
+    const start = new Date();
 
     let i;
     let verificationError = false;
 
     for (i = 0; i < 1000; i++) {
-        const message = new Uint8Array([i, i + 1, i + 2, i + 3]);
+        const message = new Uint8Array([0, 1, 2, 3]);
 
         const sig = schnorr.sign(group, secretKey, message);
 
@@ -178,7 +178,8 @@ function startSchnorrBenchmark(args) {
             console.log(`Benchmark: ${100 * i / 1000}%`);
         }
     }
-    page.bindingContext.set("benchmarkStatus", `Benchmark completed in ${new Date().getTime() - t0}ms.`);
+    const end = new Date();
+    page.bindingContext.set("benchmarkStatus", `Benchmark completed in ${end - start}ms.`);
 }
 
 exports.onNavigatingTo = onNavigatingTo;
