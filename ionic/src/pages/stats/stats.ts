@@ -3,10 +3,10 @@ import {ModalController, NavController, NavParams, ToastController} from 'ionic-
 import {ScanQrPage} from "../scan-qr/scan-qr";
 
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html'
+  selector: 'page-stats',
+  templateUrl: 'stats.html'
 })
-export class HomePage {
+export class StatsPage {
   private conodeJSON: string;
   constructor(public navCtrl: NavController,
               private modalController: ModalController,
