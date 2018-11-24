@@ -1,4 +1,3 @@
-require("nativescript-nodeify");
 const UUID = require("pure-uuid");
 const Crypto = require("crypto-browserify");
 const Kyber = require("@dedis/kyber-js");

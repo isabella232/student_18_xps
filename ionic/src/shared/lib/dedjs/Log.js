@@ -1,5 +1,5 @@
 const util = require('util');
-const application = require("application");
+import { Platform } from 'ionic-angular';
 
 let defaultLvl = 2;
 
@@ -44,15 +44,17 @@ class LogC {
         try {
             let stack = err.stack.split('\n')
             let method = "";
-            if (application.android) {
+
+            //TODO fix platform detection using ionic
+            /*if (Platform.OS === "android") {*/
                 method = stack[i].trim().replace(/^at */, '').split("(");
-            } else {
+            /*} else {
                 method = stack[i - 1].trim().split("@");
                 if (method.length == 1) {
                     method.push(method[0]);
                     method[0] = "?";
                 }
-            }
+            }*/
             let file = method[1].replace(/^.*\/|\)$/g, '');
             return (method[0] + " - " + file).padEnd(40);
         } catch (e) {

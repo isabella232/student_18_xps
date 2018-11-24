@@ -1,4 +1,3 @@
-require("nativescript-nodeify");
 const Kyber = require("@dedis/kyber-js");
 const CURVE_ED25519 = new Kyber.curve.edwards25519.Curve;
 

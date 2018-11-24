@@ -4,6 +4,15 @@ import {ScanQrPage} from "../scan-qr/scan-qr";
 import { Storage } from '@ionic/storage';
 import { FabContainer } from 'ionic-angular';
 
+
+import lib from "../../shared/lib";
+const Convert = lib.dedjs.Convert;
+const Net = lib.dedjs.network.NSNet;
+const RequestPath = lib.dedjs.network.RequestPath;
+const DecodeType = lib.dedjs.network.DecodeType;
+const Helper = lib.dedjs.Helper;
+const StatusExtractor = lib.dedjs.extractor.StatusExtractor;
+
 @Component({
   selector: 'page-stats',
   templateUrl: 'stats.html'

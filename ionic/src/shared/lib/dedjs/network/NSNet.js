@@ -1,14 +1,11 @@
-const Timer = require("tns-core-modules/timer");
 const protobuf = require("protobufjs");
 const co = require("co");
 const shuffle = require("shuffle-array");
-const WS = require("nativescript-websockets");
 const Buffer = require("buffer/").Buffer;
 
 const Convert = require("../../../lib/dedjs/Convert");
 const RequestPath = require("../../../lib/dedjs/network/RequestPath");
 const DecodeType = require("../../../lib/dedjs/network/DecodeType");
-const Net = require("../../../lib/dedjs/network/NSNet");
 const StatusExtractor = require("../../../lib/dedjs/extractor/StatusExtractor");
 const CothorityMessages = require("../../../lib/dedjs/network/cothority-messages");
 const Helper = require("../../../lib/dedjs/Helper");
@@ -42,7 +39,7 @@ function Socket(addr, service) {
         return new Promise((resolve, reject) => {
             const path = this.url + "/" + request.replace(/.*\./, '');
             Log.lvl1("net.Socket: new WebSocketA(" + path + ")");
-            const ws = new WS(path, {timeout: 6000});
+            const ws = new WebSocket(path);
             let protoMessage = undefined;
             let retry = false;
 
@@ -57,12 +54,12 @@ function Socket(addr, service) {
                 reject(new Error("Model " + response + " not found"));
             }
 
-            let timerId = Timer.setTimeout(()=>{
+            let timerId = setTimeout('timerId',()=>{
                 retry = true;
                 ws.close();
             }, 5000);
 
-            ws.on('open', () => {
+            ws.onopen = (() => {
                 const errMsg = requestModel.verify(data);
                 if (errMsg) {
                     console.log("couldn't verify data:", errMsg);
@@ -73,7 +70,7 @@ function Socket(addr, service) {
                 ws.send(marshal.slice());
             });
 
-            ws.on('message', (socket, message) => {
+            ws.onmessage = ((message) => {
                 Log.lvl2("Getting message:", message);
                 let buffer = new Uint8Array(message);
                 try {
@@ -88,12 +85,18 @@ function Socket(addr, service) {
                 }
             });
 
-            ws.on('close', (socket, code, reason) => {
-                Log.lvl1("Got close:", code, reason)
+            ws.onerror = ((error) => {
+                Log.error("got error:", error);
+                reject(error);
+            });
+
+
+            ws.onclose = ((e) => {
+                Log.lvl1("Got close:", e.code, e.reason)
                 if (!retry) {
-                    Timer.clearInterval(timerId);
-                    if (code === 4000) {
-                        reject(new Error(reason));
+                  clearTimeout('timerId');
+                    if (e.code === 4000) {
+                        reject(new Error(e.reason));
                     }
                     resolve(protoMessage);
                 } else {
@@ -102,13 +105,6 @@ function Socket(addr, service) {
                     ws.open();
                 }
             });
-
-            ws.on('error', (socket, error) => {
-                Log.error("got error:", error);
-                reject(error);
-            });
-
-            ws.open();
         });
     };
 }
