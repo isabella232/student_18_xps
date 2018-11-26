@@ -54,7 +54,7 @@ function Socket(addr, service) {
                 reject(new Error("Model " + response + " not found"));
             }
 
-            let timerId = setTimeout('timerId',()=>{
+            let timerId = setTimeout(()=>{
                 retry = true;
                 ws.close();
             }, 5000);
@@ -94,11 +94,12 @@ function Socket(addr, service) {
             ws.onclose = ((e) => {
                 Log.lvl1("Got close:", e.code, e.reason)
                 if (!retry) {
-                  clearTimeout('timerId');
+                  clearTimeout(timerId);
                     if (e.code === 4000) {
                         reject(new Error(e.reason));
                     }
-                    resolve(protoMessage);
+                  Log.lvl1("Cleared timer.")
+                  resolve(protoMessage);
                 } else {
                     Log.lvl1("Retrying");
                     retry = false;
@@ -247,11 +248,11 @@ function getServerIdentityFromAddress(address) {
 
     return cothoritySocket.send(RequestPath.STATUS_REQUEST, DecodeType.STATUS_RESPONSE, statusRequestMessage)
         .then(statusResponse => {
-            const hexKey = StatusExtractor.getPublicKey(statusResponse);
+          console.log("Status response: ",statusResponse);
+          const hexKey = StatusExtractor.getPublicKey(statusResponse);
             const description = StatusExtractor.getDescription(statusResponse);
             const id = StatusExtractor.getID(statusResponse);
             const server = Convert.toServerIdentity(address, Convert.hexToByteArray(hexKey), description, Convert.hexToByteArray(id));
-
             return server;
         })
 
