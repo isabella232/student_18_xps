@@ -39,6 +39,9 @@ function Socket(addr, service) {
         return new Promise((resolve, reject) => {
             const path = this.url + "/" + request.replace(/.*\./, '');
             Log.lvl1("net.Socket: new WebSocketA(" + path + ")");
+            WebSocket.pluginOptions = {
+              override: true
+            };
             const ws = new WebSocket(path);
             let protoMessage = undefined;
             let retry = false;
@@ -54,12 +57,13 @@ function Socket(addr, service) {
                 reject(new Error("Model " + response + " not found"));
             }
 
-            let timerId = setTimeout(()=>{
+            /*let timerId = setTimeout(()=>{
                 retry = true;
                 ws.close();
-            }, 5000);
+            }, 5000);*/
 
-            ws.onopen = (() => {
+            ws.onopen = function () {
+              Log.lvl2("ws opened.");
                 const errMsg = requestModel.verify(data);
                 if (errMsg) {
                     console.log("couldn't verify data:", errMsg);
@@ -67,31 +71,37 @@ function Socket(addr, service) {
                 }
                 const message = requestModel.create(data);
                 const marshal = requestModel.encode(message).finish();
-                ws.send(marshal.slice());
-            });
+                try {
+                  this.send(marshal.slice());
+                  Log.lvl2("marshal sent:",message);
+                }
+                catch (error) {
+                  Log.error(error);
+                }
+            };
 
-            ws.onmessage = ((message) => {
-                Log.lvl2("Getting message:", message);
-                let buffer = new Uint8Array(message);
+            ws.onmessage = function(event){
+                Log.lvl2("Getting message:", event.data);
+                let buffer = new Uint8Array(event.data);
                 try {
                     protoMessage = responseModel.decode(buffer);
-                    ws.close();
+                    this.close(1000,"normal closure.");
                 } catch (err) {
                     console.log("got message with length", buffer.length);
                     console.dir("unmarshalling into", responseModel);
                     console.log("error while decoding:", err, "buffer is:", Buffer.from(buffer).toString("hex"));
-                    ws.close();
+                    this.close(1005, "Incorrect message received, see log for more info.");
                     reject(err);
                 }
-            });
+            };
 
-            ws.onerror = ((error) => {
-                Log.error("got error:", error);
-                reject(error);
-            });
+            ws.onerror = function() {
+                Log.error("got error ");
+                reject("got error");
+            };
 
 
-            ws.onclose = ((e) => {
+            ws.onclose = function(e) {
                 Log.lvl1("Got close:", e.code, e.reason)
                 if (!retry) {
                   clearTimeout(timerId);
@@ -103,9 +113,9 @@ function Socket(addr, service) {
                 } else {
                     Log.lvl1("Retrying");
                     retry = false;
-                    ws.open();
+                    //TODO equivalent of ws.open using https://github.com/knowledgecode/WebSocket-for-Android
                 }
-            });
+            };
         });
     };
 }
