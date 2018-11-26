@@ -5,13 +5,13 @@ import { Storage } from '@ionic/storage';
 import { FabContainer } from 'ionic-angular';
 
 
-import lib from "../../shared/lib";
-const Convert = lib.dedjs.Convert;
-const Net = lib.dedjs.network.NSNet;
-const RequestPath = lib.dedjs.network.RequestPath;
-const DecodeType = lib.dedjs.network.DecodeType;
-const Helper = lib.dedjs.Helper;
-const StatusExtractor = lib.dedjs.extractor.StatusExtractor;
+import dedjs from "../../shared/lib/dedjs/";
+const Convert = dedjs.Convert;
+const Net = dedjs.network.NSNet;
+const RequestPath = dedjs.network.RequestPath;
+const DecodeType = dedjs.network.DecodeType;
+const Helper = dedjs.Helper;
+const StatusExtractor = require("../../shared/lib/dedjs/extractor/StatusExtractor");
 
 @Component({
   selector: 'page-stats',

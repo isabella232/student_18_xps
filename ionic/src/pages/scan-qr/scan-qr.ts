@@ -8,7 +8,6 @@ import {QRScanner, QRScannerStatus} from "@ionic-native/qr-scanner";
  * Ionic pages and navigation.
  */
 
-@IonicPage()
 @Component({
   selector: 'page-scan-qr',
   templateUrl: 'scan-qr.html',

@@ -1,5 +1,4 @@
 const util = require('util');
-import { Platform } from 'ionic-angular';
 
 let defaultLvl = 2;
 
