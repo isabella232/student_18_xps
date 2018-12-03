@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage';
 import { FabContainer } from 'ionic-angular';
 
 
+import {Socket, getServerIdentityFromAddress} from "../../shared/lib/dedjs/network/NSNet";
 import dedjs from "../../shared/lib/dedjs/";
 const Convert = dedjs.Convert;
 const Net = dedjs.network.NSNet;
@@ -97,10 +98,10 @@ export class StatsPage {
     console.log("Loading stats for server: " + server.websocketAddr);
 
     const address = server.websocketAddr;
-    const cothoritySocket = new Net.Socket(address, RequestPath.STATUS);
+    const cothoritySocket = new Socket(address, RequestPath.STATUS);
     const statusRequestMessage = {};
 
-    Net.getServerIdentityFromAddress(server.addr)
+    getServerIdentityFromAddress(server.addr)
       .then(serverIdentity => {
         cothoritySocket.send(RequestPath.STATUS_REQUEST, DecodeType.STATUS_RESPONSE, statusRequestMessage)
           .then(response => {

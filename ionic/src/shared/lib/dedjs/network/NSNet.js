@@ -2,6 +2,8 @@ const protobuf = require("protobufjs");
 const co = require("co");
 const shuffle = require("shuffle-array");
 const Buffer = require("buffer/").Buffer;
+//const $WebSocket =  require('angular2-websocket/angular2-websocket');
+import {$WebSocket} from 'angular2-websocket/angular2-websocket'
 
 const Convert = require("../../../lib/dedjs/Convert");
 const RequestPath = require("../../../lib/dedjs/network/RequestPath");
@@ -21,7 +23,7 @@ const Log = require("../Log");
  *
  * @throws {TypeError} when url is not a string or protobuf is not an object
  */
-function Socket(addr, service) {
+export function Socket(addr, service) {
     if (typeof protobuf !== "object") throw new TypeError();
 
     this.url = addr + "/" + service;
@@ -40,9 +42,11 @@ function Socket(addr, service) {
             const path = this.url + "/" + request.replace(/.*\./, '');
             Log.lvl1("net.Socket: new WebSocketA(" + path + ")");
             WebSocket.pluginOptions = {
+              maxConnectTime: 5000,
               override: true
             };
-            const ws = new WebSocket(path);
+
+          const ws = new WebSocket(path);
             let protoMessage = undefined;
             let retry = false;
 
@@ -57,10 +61,10 @@ function Socket(addr, service) {
                 reject(new Error("Model " + response + " not found"));
             }
 
-            /*let timerId = setTimeout(()=>{
+            let timerId = setTimeout(()=>{
                 retry = true;
                 ws.close();
-            }, 5000);*/
+            }, 5000);
 
             ws.onopen = function () {
               Log.lvl2("ws opened.");
@@ -76,6 +80,7 @@ function Socket(addr, service) {
                   Log.lvl2("marshal sent:",message);
                 }
                 catch (error) {
+                  console.log(error);
                   Log.error(error);
                 }
             };
@@ -104,7 +109,7 @@ function Socket(addr, service) {
             ws.onclose = function(e) {
                 Log.lvl1("Got close:", e.code, e.reason)
                 if (!retry) {
-                  clearTimeout(timerId);
+                  //clearTimeout(timerId);
                     if (e.code === 4000) {
                         reject(new Error(e.reason));
                     }
@@ -113,7 +118,6 @@ function Socket(addr, service) {
                 } else {
                     Log.lvl1("Retrying");
                     retry = false;
-                    //TODO equivalent of ws.open using https://github.com/knowledgecode/WebSocket-for-Android
                 }
             };
         });
@@ -248,7 +252,7 @@ function tlsToWebsocket(serverIdentity, path) {
     return BASE_URL_WS + ip + URL_PORT_SPLITTER + port + path;
 }
 
-function getServerIdentityFromAddress(address) {
+export function getServerIdentityFromAddress(address) {
     if (!Helper.isValidAddress(address)) {
         return Promise.reject("Invalid address.")
     }
@@ -268,10 +272,10 @@ function getServerIdentityFromAddress(address) {
 
 }
 
-module.exports = {
-    Socket,
-    RosterSocket,
-    LeaderSocket,
-    tlsToWebsocket,
-    getServerIdentityFromAddress
-};
+export default {
+  Socket,
+  RosterSocket,
+  LeaderSocket,
+  tlsToWebsocket,
+  getServerIdentityFromAddress
+}

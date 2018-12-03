@@ -84,7 +84,6 @@
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
     <plugin name="cordova-plugin-qrscanner" spec="2.6.0" />
     <plugin name="cordova-sqlite-storage" spec="2.5.1" />
-    <plugin name="cordova-plugin-websocket" spec="^0.12.2" />
     <engine name="ios" spec="4.5.5" />
     <engine name="android" spec="^7.1.2" />
 </widget>
