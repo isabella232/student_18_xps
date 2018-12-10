@@ -296,7 +296,7 @@ class HomePage extends Component {
         const secretKey = group.scalar().pick();
         const publicKey = group.point().mul(secretKey, null);
 
-        const t0 = new Date().getMilliseconds();
+        const t0 = new Date().getTime();
 
         let i;
         let verificationError = false;
