@@ -1,5 +1,3 @@
-require("nativescript-nodeify");
-
 const Net = require("../../network/NSNet");
 const CothorityMessages = require("../../network/cothority-messages");
 const Convert = require("../../Convert");

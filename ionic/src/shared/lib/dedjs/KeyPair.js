@@ -1,4 +1,3 @@
-require("nativescript-nodeify");
 const Kyber = require("@dedis/kyber-js");
 
 const Log = require("./Log");

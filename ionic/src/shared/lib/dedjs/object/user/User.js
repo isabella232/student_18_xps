@@ -1,5 +1,3 @@
-require("nativescript-nodeify");
-const ObservableModule = require("data/observable");
 const Kyber = require("@dedis/kyber-js");
 const CurveEd25519 = new Kyber.curve.edwards25519.Curve;
 
@@ -476,15 +474,16 @@ class User {
     }
 }
 
+//TODO BROKEN - port from NativeScript not functional
 /**
  * Now we create a singleton object for the User.
  */
-
+/*
 // The symbol key reference that the singleton will use.
 const USER_PACKAGE_KEY = Symbol.for(Package.USER);
 
 // We create the singleton if it hasn't been instanciated yet.
-const globalSymbols = Object.getOwnPropertySymbols(global);
+const globalSymbols = getOwnPropertySymbols(global);
 const userExists = (globalSymbols.indexOf(USER_PACKAGE_KEY) >= 0);
 
 if (!userExists) {
@@ -513,3 +512,11 @@ Object.freeze(USER);
 
 // We export only the singleton API.
 module.exports = USER;
+*/
+function getUser(){
+    const newUser = new User();
+    newUser.load();
+
+    return newUser;
+}
+module.exports = getUser;

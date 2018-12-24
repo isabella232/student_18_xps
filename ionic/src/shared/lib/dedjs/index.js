@@ -1,7 +1,6 @@
 "use strict";
 
 const network = require("./network");
-const object = require("./object");
 const Convert = require("./Convert");
 const Crypto = require("./Crypto");
 const Helper = require("./Helper");
@@ -12,7 +11,6 @@ const RingSig = require("./RingSig");
 
 module.exports = {
     network,
-    object,
     Convert,
     Crypto,
     Helper,

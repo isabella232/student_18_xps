@@ -55,7 +55,7 @@ Built the following apk(s):
 
 
  - Display status of a conode:
-   - [ ] Android (TODO)
+   - [ ] Android (websockets not working)
    - [ ] iOS (same as android)
 
 

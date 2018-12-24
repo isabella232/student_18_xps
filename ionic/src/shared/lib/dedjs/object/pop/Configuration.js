@@ -1,5 +1,3 @@
-require("nativescript-nodeify");
-
 const Roster = require("../../../../cothority/lib/identity").Roster;
 const Convert = require("../../Convert");
 const Crypto = require('crypto-browserify');
