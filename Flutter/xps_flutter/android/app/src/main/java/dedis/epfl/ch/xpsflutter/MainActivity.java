@@ -76,7 +76,7 @@ public class MainActivity extends FlutterActivity {
 
     {
 
-        byte[] msg = [0,1,2,3];
+        byte[] msg = new byte[]{0,1,2,3};
         byte[] sigBuf = Hex.parseHexBinary("b95fc52a5fd2e18aa7ace5b2250c2a25e368f75c148ea3403c8f32b5f100781b" +
                 "362c668aab4cf50eafdc2fcf45214c0dfbe86fce72e4632158c02c571e977306");
         SchnorrSig sig = new SchnorrSig(sigBuf);

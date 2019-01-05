@@ -159,7 +159,7 @@ function startSchnorrBenchmark(args) {
     let i;
     let verificationError = false;
 
-    for (i = 0; i < 1000; i++) {
+    for (i = 0; i < 100; i++) {
         const message = new Uint8Array([0, 1, 2, 3]);
 
         const sig = schnorr.sign(group, secretKey, message);

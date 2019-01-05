@@ -173,7 +173,7 @@ class HomePage extends Component {
                 {this.state.conodeJSON ? this.state.conodeJSON : "You have no conode stored. Feel free to add one!"}
             </Text>
             <FlatList
-                data={[{key: 'a'}, {key: 'b'}]}
+                data={[]}
                 renderItem={({item}) => <Text>{item.key}</Text>}
             />
             {this.state.conodeJSON == null ?
@@ -221,7 +221,7 @@ class HomePage extends Component {
                 { key: 'conodeStatsRoute', title: 'Conode status' },
                 { key: 'benchmarkRoute', title: 'Benchmark' },
             ],
-            benchmarkStatus: "Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations)."
+            benchmarkStatus: "Start benchmark by pressing the floating button (100 Schnorr's signatures and validations)."
         };
         // here we check the memory and load the stored conode if any.
         storage.load({
@@ -301,14 +301,16 @@ class HomePage extends Component {
         let i;
         let verificationError = false;
 
-        for (i = 0; i < 1000; i++) {
+        const nb_steps = 100;
+
+        for (i = 0; i < nb_steps; i++) {
             const message = new Uint8Array([i, i + 1, i + 2, i + 3]);
 
             const sig = schnorr.sign(group, secretKey, message);
 
             verificationError = !schnorr.verify(group, publicKey, message, sig);
 
-            this.setState({benchmarkStatus: `Benchmark: ${100 * i / 1000}%`});
+            this.setState({benchmarkStatus: `Benchmark: ${100 * i / nb_steps}%`});
 
 
             if (verificationError) {
@@ -317,8 +319,8 @@ class HomePage extends Component {
                 break;
             }
 
-            if (i % 100 === 0) {
-                console.log(`Benchmark: ${100 * i / 1000}%`);
+            if (i % 10 === 0) {
+                console.log(`Benchmark: ${100 * i / nb_steps}%`);
             }
         }
         if(!verificationError){

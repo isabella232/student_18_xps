@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _conodeStatus = "";
   bool errorScanning = false;
   String benchmarkStatus =
-      "Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations).";
+      "Start benchmark by pressing the floating button (100 Schnorr's signatures and validations).";
 
   @override
   void initState() {
@@ -162,12 +162,12 @@ class _MyHomePageState extends State<MyHomePage> {
     bool displayBenchmarkTime = true;
     String benchmarkStatus = "Benchmark started...";
     int start = new DateTime.now().millisecondsSinceEpoch;
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 100; i++) {
       try {
         final bool signValid =
             await platform.invokeMethod('schnorrSignAndVerify');
         if (signValid) {
-          benchmarkStatus = "Benchmark: ${100 * i / 1000}%";
+          benchmarkStatus = "Benchmark: ${100 * i / 100}%";
         }
       } on MissingPluginException catch (e) {
         benchmarkStatus =

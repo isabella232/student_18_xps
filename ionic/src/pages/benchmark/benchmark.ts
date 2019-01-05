@@ -29,13 +29,14 @@ export class BenchmarkPage {
     let i;
     let verificationError = false;
 
-    for (i = 0; i < 1000; i++) {
+    let nb_steps = 100;
+    for (i = 0; i < nb_steps; i++) {
       const message = new Uint8Array([0, 1, 2, 3]);
 
       const sig = schnorr.sign(group, secretKey, message);
 
       verificationError = !schnorr.verify(group, publicKey, message, sig);
-      this.benchmarkStatus = `Benchmark: ${100 * i / 1000}%`;
+      this.benchmarkStatus = `Benchmark: ${100 * i / nb_steps}%`;
 
 
       if (verificationError) {
@@ -44,8 +45,8 @@ export class BenchmarkPage {
         break;
       }
 
-      if (i % 100 === 0) {
-        console.log(`Benchmark: ${100 * i / 1000}%`);
+      if (i % 10 === 0) {
+        console.log(`Benchmark: ${100 * i / nb_steps}%`);
       }
     }
     const end = new Date();
