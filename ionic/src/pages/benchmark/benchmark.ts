@@ -12,7 +12,7 @@ export class BenchmarkPage {
   private benchmarkStatus: string;
 
   constructor(public navCtrl: NavController) {
-
+    this.benchmarkStatus = "Start benchmark by pressing the floating button (100 Schnorr's signatures and validations)."
   }
 
   async startBenchmark(){

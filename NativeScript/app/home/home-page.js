@@ -159,7 +159,9 @@ function startSchnorrBenchmark(args) {
     let i;
     let verificationError = false;
 
-    for (i = 0; i < 100; i++) {
+    let nb_steps = 100;
+
+    for (i = 0; i < nb_steps; i++) {
         const message = new Uint8Array([0, 1, 2, 3]);
 
         const sig = schnorr.sign(group, secretKey, message);
@@ -174,8 +176,8 @@ function startSchnorrBenchmark(args) {
             break;
         }
 
-        if (i % 100 === 0) {
-            console.log(`Benchmark: ${100 * i / 1000}%`);
+        if (i % 10 === 0) {
+            console.log(`Benchmark: ${100 * i / nb_steps}%`);
         }
     }
     const end = new Date();

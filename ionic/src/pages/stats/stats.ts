@@ -26,6 +26,7 @@ export class StatsPage {
               public navParams: NavParams,
               private toastCtrl: ToastController,
               private storage: Storage) {
+    this.conodeJSON = "You have no conode stored. Feel free to add one!";
     storage.get('conodeJSON').then((val) => {
       if(val === undefined ||val === null){
         console.log('No conode json stored.');

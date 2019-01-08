@@ -8,7 +8,7 @@ const Helper = require("../shared/lib/dedjs/Helper");
 const viewModel = Observable.fromObjectRecursive({
     isServerEmpty: true,
     server: undefined,
-    benchmarkStatus: "Start benchmark by pressing the floating button (1000 Schnorr's signatures and validations).",
+    benchmarkStatus: "Start benchmark by pressing the floating button (100 Schnorr's signatures and validations).",
     statsList: new ObservableArray()
 });
 
