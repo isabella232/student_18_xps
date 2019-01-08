@@ -4,7 +4,7 @@ This is the Ionic version of the app. See [main README](https://github.com/dedis
 
 ## Requirements
  - Node.js, [see steps here](https://nodejs.org/en/download/)
- - Any JS capable IDE (e.g. [WebStorm])(https://www.jetbrains.com/webstorm/)
+ - Any JS capable IDE (e.g. [WebStorm](https://www.jetbrains.com/webstorm/))
  - [Ionic](https://ionicframework.com/getting-started#cli)
 
 ## Before Running
@@ -69,13 +69,11 @@ Built the following apk(s):
    - [x] iOS (but on UI thread)
 
 ## Known issues
- - TODO build issue with Android
+ - There is an issue with the Cordova framework, used by Ionic, which can be stuck at the packaging of the .apk file. A fix is to disable the Gradle daemon after building the app (as mentioned previously). With this fix, the issue arise rarely, and when it happen the only solution is a cold boot of the Android emulator.
 
- - TODO build issue with iOS
+ - The iOS build fails with the new build system introduced by Xcode 10. A fix is to fallback to the legacy build system with the proper CLI options as mentioned previously.
 
- - TODO ? Background tasks
-
- - TODO ? Debugging
+ - The Schnorr signature benchmark runs on the UI thread.
 
 ## Sources
  - Setup for Ionic, https://ionicframework.com/getting-started#cli
@@ -84,4 +82,4 @@ Built the following apk(s):
  - Cothority external libraries sources, https://github.com/dedis/cothority/tree/master/external
 
 ## Licensing
-TODO
+This application is released under the [Apache 2.0 License](https://github.com/dedis/student_18_xps/blob/master/ionic/LICENSE).

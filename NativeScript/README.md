@@ -77,4 +77,4 @@ For IDEs, be aware that the ``--clean`` might be set by default. This ensures a 
  - PopCoins app sources, https://github.com/dedis/popcoins
  - PopCoins older repo, https://github.com/dedis/student_18_xplatform
 ## Licensing
-TODO
+This application is released under the [Apache 2.0 License](https://github.com/dedis/student_18_xps/blob/master/NativeScript/LICENSE).

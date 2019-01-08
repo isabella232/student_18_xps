@@ -42,7 +42,7 @@ to deploy the app to your open emulator.
 
 
  - Display status of a conode:
-   - [ ] Android (TODO)
+   - [x] Android
    - [ ] iOS (see known issues)
 
 
@@ -56,12 +56,13 @@ to deploy the app to your open emulator.
    - [ ] iOS (see known issues)
 
 ## Known issues
- - TODO Kyber iOS library issues and current state of implementation.
+ - The iOS version cannot display a conode status nor run the benchmark. A rewrite of the cothority in Dart or Swift is needed. The Android version uses the already available Java version of the cothority.
 
 ## Sources
  - Setup for Flutter, https://flutter.io/get-started/install/
  - Flutter QR Code scanner, https://medium.com/@alfianlosari/building-flutter-qr-code-generator-scanner-and-sharing-app-703e73b228d3
  - PriFi Android README, https://github.com/dedis/prifi/blob/prifi-android/README_mobile.md
  - Cothority external libraries sources, https://github.com/dedis/cothority/tree/master/external
+
 ## Licensing
-TODO
+This application is released under the [Apache 2.0 License](https://github.com/dedis/student_18_xps/blob/master/Flutter/xps_flutter/LICENSE).

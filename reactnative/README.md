@@ -86,5 +86,6 @@ in your terminal. The first compilation will take minutes, but afterwards editin
  - PopCoins app sources, https://github.com/dedis/popcoins
  - PopCoins older repo, https://github.com/dedis/student_18_xplatform
  - Cothority external libraries sources, https://github.com/dedis/cothority/tree/master/external
+
 ## Licensing
-TODO
+This application is released under the [Apache 2.0 License](https://github.com/dedis/student_18_xps/blob/master/reactnative/LICENSE).
