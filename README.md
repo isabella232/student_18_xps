@@ -17,3 +17,4 @@ The created applications had the following requirements:
  - ```reactnative``` contains the files for the React Native application
  - ```Flutter``` contains the files for the Flutter application
  - ```ionic``` contains the files for the Ionic application
+ - ```report``` contains the template files for the report, along with the report final report file ```main.pdf```.
